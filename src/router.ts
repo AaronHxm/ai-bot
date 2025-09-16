@@ -1,25 +1,14 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from './views/HomeView.vue'
+import { createRouter, createWebHistory } from 'vue-router' 
 import ChatPage from './views/ChatPage.vue'
 
-// 定义路由
-const routes = [
-  {
-    path: '/',
-    name: 'Home',
-    component: HomeView
-  },
-  {
-    path: '/chat',
-    name: 'Chat',
-    component: ChatPage
-  }
-]
+ 
 
 // 创建路由实例
 const router = createRouter({
   history: createWebHistory(),
-  routes
+  routes: [
+    { path: "/chat", component: ChatPage }
+  ]
 })
 
 // 用于处理SDK初始化的Promise

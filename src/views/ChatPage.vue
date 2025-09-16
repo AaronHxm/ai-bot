@@ -8,12 +8,7 @@
     
     <main class="page-main">
       <View 
-        :showSider="showSidebar" 
-        :contentProps="{
-          hideMessageAction: false,
-          showReferenceImgs: true,
-          showTip: true
-        }"
+      
       >
         <!-- 自定义会话列表头部 -->
         <template #SessionList_header="{ toggleOpen }">
@@ -26,7 +21,7 @@
         </template>
 
         <!-- 自定义聊天开始页面 -->
-        <template #ChatBegin_default="{ send, config }">
+        <template #ChatBegin="{ send, config }">
           <div class="custom-chat-begin">
             <div class="welcome-section">
               <h3>欢迎使用{{ config?.name   }}</h3>
@@ -42,7 +37,7 @@
         </template>
 
         <!-- 自定义用户消息显示 -->
-        <template #ChatContent_userContent="{ content }">
+        <template #ChatContent="{ content }">
           <div class="custom-user-content">
             <div class="user-avatar">
               <span>用户</span>

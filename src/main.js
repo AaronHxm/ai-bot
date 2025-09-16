@@ -49,9 +49,7 @@ init({
     if (isSuccess) {
         console.log('Zenative Chat SDK 初始化成功')
         // 触发初始化成功的方法
-        if (resolvePromise) {
-            resolvePromise()
-        }
+       resolvePromise()
     } else {
         console.log('Zenative Chat SDK 初始化失败')
     }
