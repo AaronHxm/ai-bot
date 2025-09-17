@@ -83,8 +83,7 @@
           <div class="welcome-box">
             <div class="welcome-message">
               <div>
-                <span>Hi~我是coherent公司的AI聊天助手</span>
-                <span>有什么问题随时问我吧～</span>
+                <span>{{ config?.bot?.name }}</span>
               </div>
               <img :src="robot" alt="robot" />
             </div>
@@ -92,8 +91,7 @@
             <div class="services-section">
               <span class="service-btn">我能为您提供多种服务</span>
               <p class="service-desc">
-                如果您有产品咨询、打样申请、报价、联系方式等方面的相关需求，
-                我会快速为您回应，同时为了更精准的服务您，可能会请您填写简单的问询表单，感谢您的支持~
+                {{ config?.bot?.description }}
               </p>
             </div>
           </div>
