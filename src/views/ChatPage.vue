@@ -2,15 +2,7 @@
   <div class="chat-container">
     <!-- 使用SDK的View组件，并通过插槽自定义各个部分 -->
     <View 
-      :showSider="true"
-      :contentProps="{
-        hideMessageAction: false,
-        hideEditSource: false,
-        showDebug: false,
-        showReferenceImgs: true,
-        showTip: true
-      }"
-    >
+
       <!-- 自定义会话列表头部 -->
       <template #SessionList_header="{ toggleOpen }">
         <div class="custom-session-header">
@@ -65,7 +57,7 @@
       </template>
 
       <!-- 自定义聊天开始页面 -->
-      <template #ChatBegin_default="{ send, config }">
+      <template #ChatBegin="{ send, config }">
         <div class="welcome-screen">
           <div class="welcome-header">
             <div class="coherent-logo">COHERENT</div>

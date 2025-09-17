@@ -3,12 +3,18 @@ import './style.css'
 import App from './App.vue'
 import router, { resolvePromise } from './router'
 import { init } from "@custouch-open/zenative-chat-sdk-web"
+// 导入Element Plus和样式
+import ElementPlus from 'element-plus'
+import 'element-plus/dist/index.css'
 
 // 创建Vue应用实例
 const app = createApp(App)
 
 // 使用路由
 app.use(router)
+
+// 使用Element Plus
+app.use(ElementPlus)
 
 // 初始化聊天SDK
 // 根据SDK文档要求：必须在项目入口文件中调用，且在View组件调用前完成

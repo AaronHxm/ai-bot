@@ -12,6 +12,7 @@
     "@custouch-open/zenative-chat-sdk-web": "^0.0.10",
     "copy-to-clipboard": "^3.3.3",
     "dayjs": "^1.11.18",
+    "element-plus": "^2.11.2",
     "lodash-es": "^4.17.21",
     "markdown-it": "^14.1.0",
     "vue": "^3.5.21",
