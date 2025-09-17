@@ -146,22 +146,51 @@
         </div>
       </template>
 
+      <!-- 自定义引用源显示 -->
+      <template #ChatContent_sourceItem="{ list }">
+        <div v-if="list && list.length > 0" class="link-sources">
+          <a
+              v-for="(source, index) in list"
+              :key="index"
+              :href="source.sourceUrl"
+              target="_blank"
+              class="text-link"
+          >
+            <span class="link-icon">🔗</span>
+            {{ source.sourceName || '参考链接' }}
+          </a>
+        </div>
+      </template>
+
       <!-- 自定义消息底部操作 -->
       <template #ChatContent_bottomActions="{ copy, voteType, feedback }">
-        <div class="custom-message-actions">
-          <button @click="copy" class="action-btn">复制</button>
-          <button
-              @click="() => feedback('like')"
-              :class="['action-btn', voteType === 'like' ? 'active' : '']"
-          >
-            👍
-          </button>
-          <button
-              @click="() => feedback('dislike')"
-              :class="['action-btn', voteType === 'dislike' ? 'active' : '']"
-          >
-            👎
-          </button>
+        <div class="bottom-actions">
+          <!-- 点赞按钮 -->
+          <el-button
+              :icon="Thumb"
+              size="small"
+              :type="voteType === 'like' ? 'primary' : 'text'"
+              @click="feedback('like')"
+              class="action-btn"
+          />
+
+          <!-- 点踩按钮 -->
+          <el-button
+              :icon="CircleClose"
+              size="small"
+              :type="voteType === 'dislike' ? 'danger' : 'text'"
+              @click="feedback('dislike')"
+              class="action-btn"
+          />
+
+          <!-- 复制按钮 -->
+          <el-button
+              :icon="DocumentCopy"
+              size="small"
+              text
+              @click="copy"
+              class="action-btn"
+          />
         </div>
       </template>
 
@@ -214,15 +243,11 @@ import { View } from "@custouch-open/zenative-chat-sdk-web";
 import "@custouch-open/zenative-chat-sdk-web/style";
 import coherentLogo from "../assets/coherent-logo-blue.png";
 import robot from "../assets/robot.png";
+import {  CircleClose, DocumentCopy } from '@element-plus/icons-vue'
 
 const userInput = ref("");
 const open = ref(true);
 
-const exampleQuestions = [
-  "推荐一款用于平板显示的激光器",
-  "我想申请打样",
-  "怎么联系你们的销售人员?",
-];
 
 const handleSend = (sendFunction) => {
   if (userInput.value.trim()) {
@@ -243,9 +268,143 @@ const formatTime = (time) => {
     minute: "2-digit",
   });
 };
+
+
+const selectedSource = ref(null)
+
+// 处理源点击
+const handleSourceClick = (source) => {
+  console.log('点击源:', source)
+  // 可以根据需要实现不同的点击行为
+  if (source.type === 'image') {
+    selectedSource.value = source
+  } else {
+    handleOpenSource(source)
+  }
+}
+
+// 处理预览
+const handlePreview = (source) => {
+  selectedSource.value = source
+}
+
+// 关闭预览
+const closePreview = () => {
+  selectedSource.value = null
+}
+
+// 打开源文件
+const handleOpenSource = (source) => {
+  if (source.url) {
+    window.open(source.url, '_blank')
+  } else {
+    console.warn('源文件没有有效的URL:', source)
+  }
+}
+
+// 复制链接
+const handleCopyLink = async (source) => {
+  if (source.url) {
+    try {
+      await navigator.clipboard.writeText(source.url)
+      alert('链接已复制到剪贴板')
+    } catch (err) {
+      console.error('复制失败:', err)
+      // 降级方案
+      const textArea = document.createElement('textarea')
+      textArea.value = source.url
+      document.body.appendChild(textArea)
+      textArea.select()
+      document.execCommand('copy')
+      document.body.removeChild(textArea)
+      alert('链接已复制')
+    }
+  }
+}
+
+// 图片加载错误处理
+const handleImageError = (event) => {
+  event.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iI2YzZjNmMyIvPjx0ZXh0IHg9IjUwIiB5PSI1MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEwIiBmaWxsPSIjOTk5IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+5Zu+54KHImltYWdlIjwvdGV4dD48L3N2Zz4='
+}
+
+// 文本截断
+const truncateText = (text, maxLength) => {
+  if (!text) return ''
+  return text.length > maxLength ? text.substring(0, maxLength) + '...' : text
+}
+
+// 获取类型标签
+const getTypeLabel = (type) => {
+  const typeMap = {
+    'pdf': 'PDF文档',
+    'word': 'Word文档',
+    'web': '网页',
+    'image': '图片',
+    'video': '视频'
+  }
+  return typeMap[type] || '文档'
+}
+
+// 格式化日期
+const formatDate = (dateString) => {
+  try {
+    return new Date(dateString).toLocaleDateString('zh-CN')
+  } catch {
+    return dateString
+  }
+}
 </script>
 
 <style scoped>
+/* 自定义底部 复制 点赞 的样式 */
+
+.bottom-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+}
+
+.action-btn {
+  padding: 4px 8px;
+  min-width: 32px;
+}
+
+.action-btn:hover {
+  background-color: #f5f7fa;
+  border-radius: 4px;
+}
+
+
+
+
+/* 引用源的样式 */
+.link-sources {
+  margin: 8px 0;
+}
+
+.text-link {
+  color: #1890ff;
+  text-decoration: none;
+  font-size: 14px;
+  display: block;
+  margin-bottom: 6px;
+  padding: 2px 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.text-link:hover {
+  color: #40a9ff;
+  text-decoration: underline;
+}
+
+.link-icon {
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
 .chat-container {
   height: 100vh;
   width: 100vw;
