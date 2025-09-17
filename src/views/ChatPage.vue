@@ -76,7 +76,7 @@
         <div class="welcome-screen">
           <div class="welcome-header">
             <div class="coherent-logo">
-              <img :src="coherentLogo" alt="coherent-logo" />
+              <img :src="coherentLogo" alt="coherent-logo"/>
             </div>
           </div>
 
@@ -85,7 +85,7 @@
               <div>
                 <span>{{ config?.bot?.name }}</span>
               </div>
-              <img :src="robot" alt="robot" />
+              <img :src="robot" alt="robot"/>
             </div>
 
             <div class="services-section">
@@ -149,16 +149,16 @@
       <!-- 自定义引用源显示 -->
       <template #ChatContent_sourceItem="{ list }">
         <div v-if="list && list.length > 0" class="link-sources">
-          <a
+          <el-link
               v-for="(source, index) in list"
               :key="index"
               :href="source.sourceUrl"
               target="_blank"
-              class="text-link"
+              :icon="Link"
+              class="source-link"
           >
-            <span class="link-icon">🔗</span>
             {{ source.sourceName || '参考链接' }}
-          </a>
+          </el-link>
         </div>
       </template>
 
@@ -238,12 +238,12 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { View } from "@custouch-open/zenative-chat-sdk-web";
+import {ref} from "vue";
+import {View} from "@custouch-open/zenative-chat-sdk-web";
 import "@custouch-open/zenative-chat-sdk-web/style";
 import coherentLogo from "../assets/coherent-logo-blue.png";
 import robot from "../assets/robot.png";
-import {  CircleClose, DocumentCopy } from '@element-plus/icons-vue'
+import {Link, CircleClose, DocumentCopy} from '@element-plus/icons-vue'
 
 const userInput = ref("");
 const open = ref(true);
@@ -374,8 +374,6 @@ const formatDate = (dateString) => {
   background-color: #f5f7fa;
   border-radius: 4px;
 }
-
-
 
 
 /* 引用源的样式 */
