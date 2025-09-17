@@ -12,60 +12,83 @@
       }"
     >
       <!-- 自定义会话列表头部 -->
-      <template #SessionList_header="{ toggleOpen }">
+      <template #SessionList_header="{ toggleOpen, open }">
         <div class="custom-session-header">
-          <h2>消息列表</h2>
-          <button @click="toggleOpen" class="toggle-btn">
-            {{ open ? "收起" : "展开" }}
-          </button>
+          <h2 class="session-title">消息列表</h2>
+          <el-button
+              @click="toggleOpen"
+              :icon="Close"
+              size="small"
+              text
+              class="close-btn"
+          />
         </div>
       </template>
 
       <!-- 自定义会话列表内容 -->
-      <template
-          #SessionList_body="{
-          recentData,
-          oldData,
-          onEditConfirm,
-          onDeleteSession,
-        }"
-      >
-        <div class="custom-session-list">
-          <div class="time-section">
-            <h3>今天</h3>
-            <div
-                v-for="(item, index) in recentData"
-                :key="'recent-' + index"
-                class="session-item"
-            >
-              <div class="session-content">
-                <p class="session-preview">{{ item.preview || "新会话" }}</p>
-                <span class="session-time">{{ formatTime(item.time) }}</span>
-              </div>
-              <div class="session-actions">
-                <button class="action-btn" @click="handleSessionAction(item)">
-                  ⋮
-                </button>
+      <template #SessionList_body="{ recentData, oldData, onEditConfirm, onDeleteSession }">
+        <div class="session-list-body">
+          <!-- 今天会话 -->
+          <div class="time-section" v-if="recentData && recentData.length > 0">
+            <div class="time-label">今天</div>
+            <div class="session-items">
+              <div
+                  v-for="item in recentData"
+                  :key="item.id"
+                  class="session-item"
+                  @click="handleSessionClick(item)"
+              >
+                <div class="session-content">
+                  {{ item.title || '未命名会话' }}
+                </div>
+                <div class="session-actions">
+                  <el-dropdown trigger="click" @command="(command) => handleCommand(command, item)">
+                    <el-button :icon="More" size="small" text class="action-btn" />
+                    <template #dropdown>
+                      <el-dropdown-menu>
+                        <el-dropdown-item command="edit">重命名</el-dropdown-item>
+                        <el-dropdown-item command="delete" divided>删除</el-dropdown-item>
+                      </el-dropdown-menu>
+                    </template>
+                  </el-dropdown>
+                </div>
               </div>
             </div>
           </div>
 
-          <div class="time-section">
-            <h3>更早</h3>
-            <div
-                v-for="(item, index) in oldData"
-                :key="'old-' + index"
-                class="session-item"
-            >
-              <div class="session-content">
-                <p class="session-preview">{{ item.preview || "历史会话" }}</p>
-                <span class="session-time">{{ formatTime(item.time) }}</span>
+          <!-- 更早会话 -->
+          <div class="time-section" v-if="oldData && oldData.length > 0">
+            <div class="time-label">更早</div>
+            <div class="session-items">
+              <div
+                  v-for="item in oldData"
+                  :key="item.id"
+                  class="session-item"
+                  @click="handleSessionClick(item)"
+              >
+                <div class="session-content">
+                  {{ item.title || '未命名会话' }}
+                </div>
+                <div class="session-actions">
+                  <el-dropdown trigger="click" @command="(command) => handleCommand(command, item)">
+                    <el-button :icon="More" size="small" text class="action-btn" />
+                    <template #dropdown>
+                      <el-dropdown-menu>
+                        <el-dropdown-item command="edit">重命名</el-dropdown-item>
+                        <el-dropdown-item command="delete" divided>删除</el-dropdown-item>
+                      </el-dropdown-menu>
+                    </template>
+                  </el-dropdown>
+                </div>
               </div>
-              <div class="session-actions">
-                <button class="action-btn" @click="handleSessionAction(item)">
-                  ⋮
-                </button>
-              </div>
+            </div>
+          </div>
+
+          <!-- 空状态 -->
+          <div class="empty-state" v-if="!recentData?.length && !oldData?.length">
+            <div class="empty-content">
+              <div class="empty-icon">💬</div>
+              <div class="empty-text">暂无会话记录</div>
             </div>
           </div>
         </div>
@@ -243,7 +266,7 @@ import {View} from "@custouch-open/zenative-chat-sdk-web";
 import "@custouch-open/zenative-chat-sdk-web/style";
 import coherentLogo from "../assets/coherent-logo-blue.png";
 import robot from "../assets/robot.png";
-import {Link, CircleClose, DocumentCopy} from '@element-plus/icons-vue'
+import {Link, CircleClose, DocumentCopy,ArrowLeft, ArrowRight } from '@element-plus/icons-vue'
 
 const userInput = ref("");
 const open = ref(true);
@@ -411,96 +434,205 @@ const formatDate = (dateString) => {
 
 /* 自定义会话列表头部 */
 .custom-session-header {
+  position: relative;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 15px;
-  background: linear-gradient(0deg, #333333, #333333), rgba(179, 179, 179, 0.82);
-  background-blend-mode: color-dodge, normal;
-  backdrop-filter: blur(25px);
-  border-bottom: 0.25px solid #d5d5d5;
+  justify-content: space-between;
+  padding: 16px;
+  background: white;
+  border-bottom: 1px solid #e9ecef;
+  height: 56px;
+  box-sizing: border-box;
 }
 
-.custom-session-header h2 {
-  margin: 0;
-  font-size: 18px;
-  color: #000000;
+.session-title {
+  position: absolute;
+  width: 64px;
+  height: 24px;
+  left: 16px;
+  top: 16px;
+  font-family: 'PingFang SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-style: normal;
   font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+  color: #0032FF;
+  margin: 0;
 }
 
-.toggle-btn {
-  background: none;
-  border: 1px solid #ddd;
-  padding: 5px 10px;
+.close-btn {
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  padding: 4px;
+  color: #666;
+}
+
+.close-btn:hover {
+  color: #333;
+  background-color: #f5f7fa;
   border-radius: 4px;
-  cursor: pointer;
-  font-size: 12px;
+}
+
+/* 确保字体样式正确应用 */
+.custom-session-header {
+  font-family: 'PingFang SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 /* 自定义会话列表 */
-.custom-session-list {
-  padding: 15px;
+.session-list-body {
+  width: 375px;
+  height: 100%;
+  background: #F4FAFF;
+  overflow-y: auto;
+  padding: 0;
 }
 
 .time-section {
+  padding: 0 16px;
   margin-bottom: 20px;
 }
 
-.time-section h3 {
-  margin: 0 0 10px 0;
-  font-size: 14px;
-  color: #666;
-  font-weight: 600;
+.time-label {
+  font-family: 'PingFang SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+  color: rgba(100, 100, 100, 0.8);
+  margin-bottom: 12px;
+}
+
+.session-items {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .session-item {
   display: flex;
   align-items: center;
-  padding: 12px;
-  border-radius: 8px;
-  margin-bottom: 8px;
+  padding: 12px 16px;
+  background: #FFFFFF;
+  border-radius: 12px;
   cursor: pointer;
-  transition: background-color 0.2s;
-  background: #ffffff;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
 }
 
 .session-item:hover {
-  background-color: #f0f0f0;
+  border-color: #0032FF;
+  box-shadow: 0px 4px 12px rgba(0, 50, 255, 0.1);
 }
 
 .session-content {
   flex: 1;
-}
-
-.session-preview {
-  margin: 0 0 5px 0;
+  font-family: 'PingFang SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-style: normal;
+  font-weight: 400;
   font-size: 14px;
-  color: #333;
+  line-height: 16px;
+  color: #000000;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.session-time {
-  font-size: 12px;
-  color: #999;
-}
-
 .session-actions {
-  opacity: 0;
-  transition: opacity 0.2s;
-}
-
-.session-item:hover .session-actions {
-  opacity: 1;
+  flex-shrink: 0;
+  margin-left: 8px;
 }
 
 .action-btn {
-  background: none;
-  border: none;
-  font-size: 16px;
-  cursor: pointer;
-  padding: 5px;
+  padding: 4px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.session-item:hover .action-btn {
+  opacity: 1;
+}
+
+.empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  padding: 0 16px;
+}
+
+.empty-content {
+  text-align: center;
+}
+
+.empty-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.empty-text {
+  font-family: 'PingFang SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  color: rgba(100, 100, 100, 0.6);
+}
+
+/* 滚动条样式 */
+.session-list-body::-webkit-scrollbar {
+  width: 4px;
+}
+
+.session-list-body::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 2px;
+}
+
+.session-list-body::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 2px;
+}
+
+.session-list-body::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* 背景装饰元素 */
+.session-list-body::before {
+  content: '';
+  position: absolute;
+  width: 310px;
+  height: 310px;
+  left: -71px;
+  top: -90px;
+  background: #55F0FF;
+  opacity: 0.2;
+  filter: blur(60px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.session-list-body::after {
+  content: '';
+  position: absolute;
+  width: 310px;
+  height: 310px;
+  left: 136px;
+  top: -95px;
+  background: #0032FF;
+  opacity: 0.1;
+  filter: blur(60px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* 确保内容在背景之上 */
+.time-section,
+.empty-state {
+  position: relative;
+  z-index: 1;
 }
 
 /* 欢迎界面样式 */
