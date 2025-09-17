@@ -1,30 +1,45 @@
 <template>
   <div class="chat-container">
     <!-- 使用SDK的View组件，并通过插槽自定义各个部分 -->
-    <View 
-
+    <View
+      :showSider="true"
+      :contentProps="{
+        hideMessageAction: false,
+        hideEditSource: false,
+        showDebug: false,
+        showReferenceImgs: true,
+        showTip: true,
+      }"
+    >
       <!-- 自定义会话列表头部 -->
       <template #SessionList_header="{ toggleOpen }">
         <div class="custom-session-header">
           <h2>消息列表</h2>
           <button @click="toggleOpen" class="toggle-btn">
-            {{ open ? '收起' : '展开' }}
+            {{ open ? "收起" : "展开" }}
           </button>
         </div>
       </template>
 
       <!-- 自定义会话列表内容 -->
-      <template #SessionList_body="{ recentData, oldData, onEditConfirm, onDeleteSession }">
+      <template
+        #SessionList_body="{
+          recentData,
+          oldData,
+          onEditConfirm,
+          onDeleteSession,
+        }"
+      >
         <div class="custom-session-list">
           <div class="time-section">
             <h3>今天</h3>
-            <div 
-              v-for="(item, index) in recentData" 
+            <div
+              v-for="(item, index) in recentData"
               :key="'recent-' + index"
               class="session-item"
             >
               <div class="session-content">
-                <p class="session-preview">{{ item.preview || '新会话' }}</p>
+                <p class="session-preview">{{ item.preview || "新会话" }}</p>
                 <span class="session-time">{{ formatTime(item.time) }}</span>
               </div>
               <div class="session-actions">
@@ -37,13 +52,13 @@
 
           <div class="time-section">
             <h3>更早</h3>
-            <div 
-              v-for="(item, index) in oldData" 
+            <div
+              v-for="(item, index) in oldData"
               :key="'old-' + index"
               class="session-item"
             >
               <div class="session-content">
-                <p class="session-preview">{{ item.preview || '历史会话' }}</p>
+                <p class="session-preview">{{ item.preview || "历史会话" }}</p>
                 <span class="session-time">{{ formatTime(item.time) }}</span>
               </div>
               <div class="session-actions">
@@ -57,42 +72,66 @@
       </template>
 
       <!-- 自定义聊天开始页面 -->
-      <template #ChatBegin="{ send, config }">
+      <template #ChatBegin_default="{ send, config }">
         <div class="welcome-screen">
           <div class="welcome-header">
-            <div class="coherent-logo">COHERENT</div>
+            <div class="coherent-logo">
+              <img :src="coherentLogo" alt="coherent-logo" />
+            </div>
           </div>
-          <div class="welcome-message">
-            <p>{{ config?.personalizationSettings?.introduction?.content }}</p>
-        
-          </div>
-          
-          <div class="services-section">
-            <button class="service-btn">我能为您提供多种服务</button>
-            <p class="service-desc">
-              如果您有产品咨询、打样申请、报价、联系方式等方面的相关需求，
-              我会快速为您回应，同时为了更精准的服务您，可能会请您填写简单的问询表单，感谢您的支持~
-            </p>
+
+          <div class="welcome-box">
+            <div class="welcome-message">
+              <div>
+                <span>Hi~我是coherent公司的AI聊天助手</span>
+                <span>有什么问题随时问我吧～</span>
+              </div>
+              <img :src="robot" alt="robot" />
+            </div>
+
+            <div class="services-section">
+              <span class="service-btn">我能为您提供多种服务</span>
+              <p class="service-desc">
+                如果您有产品咨询、打样申请、报价、联系方式等方面的相关需求，
+                我会快速为您回应，同时为了更精准的服务您，可能会请您填写简单的问询表单，感谢您的支持~
+              </p>
+            </div>
           </div>
 
           <div class="example-questions">
             <h3>试一试:</h3>
-            <div 
-              v-for="(question, index) in exampleQuestions" 
+            <div
+              v-for="(question, index) in exampleQuestions"
               :key="index"
               class="question-item"
               @click="send(question)"
             >
               <div class="question-icon">
                 <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                  <path d="M1.2 6C1.2 3.34903 3.34903 1.2 6 1.2C8.65097 1.2 10.8 3.34903 10.8 6C10.8 8.65097 8.65097 10.8 6 10.8C3.34903 10.8 1.2 8.65097 1.2 6Z" stroke="#0032FF" stroke-width="1.5"/>
+                  <path
+                    d="M1.2 6C1.2 3.34903 3.34903 1.2 6 1.2C8.65097 1.2 10.8 3.34903 10.8 6C10.8 8.65097 8.65097 10.8 6 10.8C3.34903 10.8 1.2 8.65097 1.2 6Z"
+                    stroke="#0032FF"
+                    stroke-width="1.5"
+                  />
                 </svg>
               </div>
               <span class="question-text">{{ question }}</span>
               <span class="arrow-icon">
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                  <path d="M4 8H12" stroke="#646464" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                  <path d="M8 4L12 8L8 12" stroke="#646464" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path
+                    d="M4 8H12"
+                    stroke="#646464"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M8 4L12 8L8 12"
+                    stroke="#646464"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
                 </svg>
               </span>
             </div>
@@ -113,14 +152,14 @@
       <template #ChatContent_bottomActions="{ copy, voteType, feedback }">
         <div class="custom-message-actions">
           <button @click="copy" class="action-btn">复制</button>
-          <button 
-            @click="() => feedback('like')" 
+          <button
+            @click="() => feedback('like')"
             :class="['action-btn', voteType === 'like' ? 'active' : '']"
           >
             👍
           </button>
-          <button 
-            @click="() => feedback('dislike')" 
+          <button
+            @click="() => feedback('dislike')"
             :class="['action-btn', voteType === 'dislike' ? 'active' : '']"
           >
             👎
@@ -131,7 +170,7 @@
       <!-- 自定义输入区域 -->
       <template #ChatInput_input="{ send, loading }">
         <div class="custom-input-area">
-          <input 
+          <input
             v-model="userInput"
             type="text"
             placeholder="请输入您的问题"
@@ -139,13 +178,16 @@
             @keyup.enter="handleSend(send)"
             class="message-input"
           />
-          <button 
-            @click="handleSend(send)" 
+          <button
+            @click="handleSend(send)"
             :disabled="loading || !userInput.trim()"
             class="send-btn"
           >
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path d="M2.90909 21L21.5455 12L2.90909 3L3 10.3636L15.5455 12L3 13.6364L2.90909 21Z" fill="white"/>
+              <path
+                d="M2.90909 21L21.5455 12L2.90909 3L3 10.3636L15.5455 12L3 13.6364L2.90909 21Z"
+                fill="white"
+              />
             </svg>
           </button>
         </div>
@@ -155,7 +197,12 @@
       <template #ChatInput_newChat="{ onNewSession }">
         <button class="new-chat-button" @click="onNewSession">
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-            <path d="M10 4V16M4 10H16" stroke="#000000" stroke-width="2" stroke-linecap="round"/>
+            <path
+              d="M10 4V16M4 10H16"
+              stroke="#000000"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
           </svg>
         </button>
       </template>
@@ -164,38 +211,40 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { View } from "@custouch-open/zenative-chat-sdk-web"
-import "@custouch-open/zenative-chat-sdk-web/style"
+import { ref } from "vue";
+import { View } from "@custouch-open/zenative-chat-sdk-web";
+import "@custouch-open/zenative-chat-sdk-web/style";
+import coherentLogo from "../assets/coherent-logo-blue.png";
+import robot from "../assets/robot.png";
 
-const userInput = ref('')
-const open = ref(true)
+const userInput = ref("");
+const open = ref(true);
 
 const exampleQuestions = [
   "推荐一款用于平板显示的激光器",
   "我想申请打样",
-  "怎么联系你们的销售人员?"
-]
+  "怎么联系你们的销售人员?",
+];
 
 const handleSend = (sendFunction) => {
   if (userInput.value.trim()) {
-    sendFunction(userInput.value)
-    userInput.value = ''
+    sendFunction(userInput.value);
+    userInput.value = "";
   }
-}
+};
 
 const handleSessionAction = (session) => {
   // 处理会话操作（重命名、删除等）
-  console.log('Session action:', session)
-}
+  console.log("Session action:", session);
+};
 
 const formatTime = (time) => {
-  if (!time) return '刚刚'
-  return new Date(time).toLocaleTimeString('zh-CN', { 
-    hour: '2-digit', 
-    minute: '2-digit' 
-  })
-}
+  if (!time) return "刚刚";
+  return new Date(time).toLocaleTimeString("zh-CN", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
 </script>
 
 <style scoped>
@@ -214,7 +263,7 @@ const formatTime = (time) => {
   background: linear-gradient(0deg, #333333, #333333), rgba(179, 179, 179, 0.82);
   background-blend-mode: color-dodge, normal;
   backdrop-filter: blur(25px);
-  border-bottom: 0.25px solid #D5D5D5;
+  border-bottom: 0.25px solid #d5d5d5;
 }
 
 .custom-session-header h2 {
@@ -257,7 +306,7 @@ const formatTime = (time) => {
   margin-bottom: 8px;
   cursor: pointer;
   transition: background-color 0.2s;
-  background: #FFFFFF;
+  background: #ffffff;
 }
 
 .session-item:hover {
@@ -315,12 +364,38 @@ const formatTime = (time) => {
 .coherent-logo {
   font-size: 24px;
   font-weight: bold;
-  color: #0032FF;
+  color: #0032ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin-bottom: 15px;
+
+  > img {
+    width: 90px;
+    height: 18px;
+  }
+}
+
+.welcome-box {
+  width: 343px;
+  height: 207px;
+  background: linear-gradient(
+    92.9deg,
+    rgba(0, 50, 255, 0.15) 0%,
+    rgba(43, 145, 255, 0.15) 47.61%,
+    rgba(85, 240, 255, 0.15) 95.22%
+  );
+  border-radius: 16px;
+  overflow: hidden;
 }
 
 .welcome-message {
   margin-bottom: 25px;
+  display: flex;
+
+  > img {
+    width: 135px;
+  }
 }
 
 .welcome-message p {
@@ -338,15 +413,20 @@ const formatTime = (time) => {
 }
 
 .services-section {
-  background: linear-gradient(92.9deg, rgba(0, 50, 255, 0.15) 0%, rgba(43, 145, 255, 0.15) 47.61%, rgba(85, 240, 255, 0.15) 95.22%);
+  background-color: #fff;
   border-radius: 16px;
+  height: 92px;
   padding: 15px;
-  margin-bottom: 25px;
   backdrop-filter: blur(6px);
+  position: relative;
+  margin-top: -30px;
 }
 
 .service-btn {
-  background: #0032FF;
+  position: absolute;
+  top: -36px;
+  left: 30px;
+  background: #0032ff;
   color: white;
   border: none;
   padding: 8px 16px;
@@ -382,7 +462,7 @@ const formatTime = (time) => {
   display: flex;
   align-items: center;
   padding: 9px 8px;
-  background: #FFFFFF;
+  background: #ffffff;
   border-radius: 8px;
   margin-bottom: 12px;
   cursor: pointer;
@@ -417,6 +497,7 @@ const formatTime = (time) => {
   display: flex;
   justify-content: flex-end;
   margin-bottom: 10px;
+  width: 100%;
 }
 
 .message-bubble {
@@ -454,7 +535,7 @@ const formatTime = (time) => {
   display: flex;
   gap: 8px;
   padding: 8px 16px;
-  background: #FFFFFF;
+  background: #ffffff;
   border-top: 1px solid #e0e0e0;
   align-items: center;
 }
@@ -462,7 +543,7 @@ const formatTime = (time) => {
 .message-input {
   flex: 1;
   padding: 9px 14px;
-  border: 1.5px solid #0032FF;
+  border: 1.5px solid #0032ff;
   border-radius: 8px;
   outline: none;
   font-size: 13px;
@@ -470,13 +551,13 @@ const formatTime = (time) => {
 }
 
 .message-input:focus {
-  border-color: #0032FF;
+  border-color: #0032ff;
 }
 
 .send-btn {
   width: 40px;
   height: 40px;
-  background: linear-gradient(127.01deg, #55F0FF 12.69%, #0032FF 85.34%);
+  background: linear-gradient(127.01deg, #55f0ff 12.69%, #0032ff 85.34%);
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -504,33 +585,37 @@ const formatTime = (time) => {
 
 /* 背景效果 */
 :deep(.chat-content) {
-  background: linear-gradient(180deg, rgba(245, 245, 245, 0) 0%, #F5F5F5 30%), 
-              linear-gradient(133.21deg, rgba(0, 50, 255, 0.1) 0%, 
-              rgba(62, 121, 239, 0.1) 28.05%, rgba(85, 240, 255, 0.1) 63.9%);
+  background: linear-gradient(180deg, rgba(245, 245, 245, 0) 0%, #f5f5f5 30%),
+    linear-gradient(
+      133.21deg,
+      rgba(0, 50, 255, 0.1) 0%,
+      rgba(62, 121, 239, 0.1) 28.05%,
+      rgba(85, 240, 255, 0.1) 63.9%
+    );
   position: relative;
 }
 
 :deep(.chat-content)::before {
-  content: '';
+  content: "";
   position: absolute;
   width: 310px;
   height: 310px;
   left: -71px;
   top: -90px;
-  background: #55F0FF;
+  background: #55f0ff;
   opacity: 0.2;
   filter: blur(60px);
   pointer-events: none;
 }
 
 :deep(.chat-content)::after {
-  content: '';
+  content: "";
   position: absolute;
   width: 310px;
   height: 310px;
   left: 136px;
   top: -95px;
-  background: #0032FF;
+  background: #0032ff;
   opacity: 0.1;
   filter: blur(60px);
   pointer-events: none;
