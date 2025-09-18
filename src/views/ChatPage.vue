@@ -2,7 +2,7 @@
   <div class="chat-container">
     <!-- 使用SDK的View组件，并通过插槽自定义各个部分 -->
     <View
-        :showSider="true"
+        :showSider="siderOpen"
         :contentProps="{
         hideMessageAction: false,
         hideEditSource: false,
@@ -134,7 +134,22 @@
 
       <!-- 自定义聊天开始页面 -->
       <template #ChatBegin_default="{ send, config }">
+
         <div class="welcome-screen">
+
+          <!-- 侧边栏控制按钮 - 需要其他方式实现 -->
+          <div class="sider-control">
+            <el-button
+                @click="handleSiderToggle"
+                :icon="siderOpen ? Close : Menu"
+                size="small"
+                text
+                class="sider-toggle-btn"
+            >
+              {{ siderOpen ? '隐藏消息列表' : '显示消息列表' }}
+            </el-button>
+          </div>
+
           <div class="welcome-header">
             <div class="coherent-logo">
               <img :src="coherentLogo" alt="coherent-logo"/>
@@ -323,7 +338,13 @@ import {
 
 const userInput = ref("");
 const open = ref(true);
+const siderOpen = ref(true)
 
+const handleSiderToggle = () => {
+  siderOpen.value = !siderOpen.value
+  // 这里需要调用 SDK 的方法来实际切换侧边栏
+  // 可能需要使用 provide/inject 或其他状态管理方式
+}
 const handleSend = (sendFunction) => {
   if (userInput.value.trim()) {
     sendFunction(userInput.value);
