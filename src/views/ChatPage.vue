@@ -139,56 +139,124 @@
 
           <div class="welcome-box">
             <div class="welcome-message">
-              <div>
-                <span>{{ config?.bot?.name }}</span>
+              <div class="welcome-text">
+                <div class="greeting">Hi~我是coherent公司的AI聊天助手</div>
+                <div class="main-message">有什么问题随时问我吧~</div>
               </div>
-              <img :src="robot" alt="robot" />
+              <div class="robot-avatar">
+                <img :src="robot" alt="robot" />
+              </div>
             </div>
 
             <div class="services-section">
-              <span class="service-btn">我能为您提供多种服务</span>
+              <button class="service-btn">我能为您提供多种服务</button>
               <p class="service-desc">
-                {{ config?.bot?.description }}
+                如果您有产品咨询、打样申请、报价、联系方式等方面的相关需求,我会快速为您回应,同时为了更精准的服务您,可能会请您填写简单的问询表单,感谢您的支持~
               </p>
             </div>
           </div>
 
           <div class="example-questions">
             <h3>试一试:</h3>
-            <div
-              v-for="(question, index) in config?.bot?.begin?.questions"
-              :key="index"
-              class="question-item"
-              @click="send(question)"
-            >
-              <div class="question-icon">
-                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                  <path
-                    d="M1.2 6C1.2 3.34903 3.34903 1.2 6 1.2C8.65097 1.2 10.8 3.34903 10.8 6C10.8 8.65097 8.65097 10.8 6 10.8C3.34903 10.8 1.2 8.65097 1.2 6Z"
-                    stroke="#0032FF"
-                    stroke-width="1.5"
-                  />
-                </svg>
+            <div class="question-list">
+              <div
+                class="question-item"
+                @click="send('推荐一款用于平板显示的激光器')"
+              >
+                <div class="question-icon">
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                    <path
+                      d="M1.2 6C1.2 3.34903 3.34903 1.2 6 1.2C8.65097 1.2 10.8 3.34903 10.8 6C10.8 8.65097 8.65097 10.8 6 10.8C3.34903 10.8 1.2 8.65097 1.2 6Z"
+                      stroke="#0032FF"
+                      stroke-width="1.5"
+                    />
+                  </svg>
+                </div>
+                <span class="question-text">推荐一款用于平板显示的激光器</span>
+                <span class="arrow-icon">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path
+                      d="M4 8H12"
+                      stroke="#646464"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M8 4L12 8L8 12"
+                      stroke="#646464"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </span>
               </div>
-              <span class="question-text">{{ question }}</span>
-              <span class="arrow-icon">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                  <path
-                    d="M4 8H12"
-                    stroke="#646464"
-                    stroke-width="1.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                  <path
-                    d="M8 4L12 8L8 12"
-                    stroke="#646464"
-                    stroke-width="1.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-              </span>
+
+              <div class="question-item" @click="send('我想申请打样')">
+                <div class="question-icon">
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                    <path
+                      d="M1.2 6C1.2 3.34903 3.34903 1.2 6 1.2C8.65097 1.2 10.8 3.34903 10.8 6C10.8 8.65097 8.65097 10.8 6 10.8C3.34903 10.8 1.2 8.65097 1.2 6Z"
+                      stroke="#0032FF"
+                      stroke-width="1.5"
+                    />
+                  </svg>
+                </div>
+                <span class="question-text">我想申请打样</span>
+                <span class="arrow-icon">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path
+                      d="M4 8H12"
+                      stroke="#646464"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M8 4L12 8L8 12"
+                      stroke="#646464"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </span>
+              </div>
+
+              <div
+                class="question-item"
+                @click="send('怎么联系你们的销售人员?')"
+              >
+                <div class="question-icon">
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                    <path
+                      d="M1.2 6C1.2 3.34903 3.34903 1.2 6 1.2C8.65097 1.2 10.8 3.34903 10.8 6C10.8 8.65097 8.65097 10.8 6 10.8C3.34903 10.8 1.2 8.65097 1.2 6Z"
+                      stroke="#0032FF"
+                      stroke-width="1.5"
+                    />
+                  </svg>
+                </div>
+                <span class="question-text">怎么联系你们的销售人员?</span>
+                <span class="arrow-icon">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path
+                      d="M4 8H12"
+                      stroke="#646464"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M8 4L12 8L8 12"
+                      stroke="#646464"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -200,6 +268,7 @@
           <div class="message-bubble">
             {{ content }}
           </div>
+          <div class="message-header-left-avatar"></div>
         </div>
       </template>
 
@@ -472,13 +541,14 @@ const formatDate = (dateString) => {
 
 /* 自定义会话列表头部 */
 .custom-session-header {
+  background-color: rebeccapurple;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 16px;
   background: white;
-  border-bottom: 1px solid #e9ecef;
+  /* border-bottom: 1px solid #e9ecef; */
   height: 56px;
   box-sizing: border-box;
 }
@@ -513,17 +583,11 @@ const formatDate = (dateString) => {
   border-radius: 4px;
 }
 
-/* 确保字体样式正确应用 */
-.custom-session-header {
-  font-family: "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Roboto, sans-serif;
-}
-
 /* 自定义会话列表 */
 .session-list-body {
-  width: 375px;
-  height: 100%;
-  background: #f4faff;
+  width: 100%;
+  height: calc(100% - 56px);
+  /* background: #f4faff; */
   overflow-y: auto;
   padding: 0;
 }
@@ -540,6 +604,7 @@ const formatDate = (dateString) => {
   font-weight: 400;
   font-size: 12px;
   line-height: 16px;
+  text-align: left;
   color: rgba(100, 100, 100, 0.8);
   margin-bottom: 12px;
 }
@@ -553,17 +618,17 @@ const formatDate = (dateString) => {
 .session-item {
   display: flex;
   align-items: center;
-  padding: 12px 16px;
+  padding: 12px 16px 12px 0;
   background: #ffffff;
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.2s ease;
-  border: 1px solid transparent;
+  /* border: 1px solid transparent; */
 }
 
 .session-item:hover {
-  border-color: #0032ff;
-  box-shadow: 0px 4px 12px rgba(0, 50, 255, 0.1);
+  /* border-color: #0032ff;
+  box-shadow: 0px 4px 12px rgba(0, 50, 255, 0.1); */
 }
 
 .session-content {
@@ -577,6 +642,7 @@ const formatDate = (dateString) => {
   color: #000000;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-align: left;
   white-space: nowrap;
 }
 
@@ -643,7 +709,7 @@ const formatDate = (dateString) => {
 }
 
 /* 背景装饰元素 */
-.session-list-body::before {
+/* .session-list-body::before {
   content: "";
   position: absolute;
   width: 310px;
@@ -669,7 +735,7 @@ const formatDate = (dateString) => {
   filter: blur(60px);
   pointer-events: none;
   z-index: 0;
-}
+} */
 
 /* 确保内容在背景之上 */
 .time-section,
@@ -717,29 +783,45 @@ const formatDate = (dateString) => {
   );
   border-radius: 16px;
   overflow: hidden;
+  position: relative;
+  margin: 0 auto 20px;
 }
 
 .welcome-message {
-  margin-bottom: 25px;
   display: flex;
-
-  > img {
-    width: 135px;
-  }
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 20px 0 0 10px;
+  height: 115px;
 }
 
-.welcome-message p {
-  margin: 5px 0;
-  color: #646464;
+.welcome-text {
+  flex: 1;
+  text-align: left;
+}
+
+.greeting {
   font-size: 12px;
+  color: #646464;
   line-height: 20px;
+  margin-bottom: 5px;
 }
 
-.welcome-message p:last-child {
+.main-message {
   font-size: 16px;
   font-weight: 600;
   color: #000000;
   line-height: 22px;
+}
+
+.robot-avatar {
+  flex-shrink: 0;
+}
+
+.robot-avatar img {
+  width: 135px;
+  height: 121px;
+  object-fit: contain;
 }
 
 .services-section {
@@ -749,23 +831,27 @@ const formatDate = (dateString) => {
   padding: 15px;
   backdrop-filter: blur(6px);
   position: relative;
-  margin-top: -30px;
 }
 
 .service-btn {
   position: absolute;
-  top: -36px;
+  width: 140px;
+  height: 20px;
+  top: -20px;
   left: 30px;
   background: #0032ff;
   color: white;
   border: none;
-  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 6px 6px 0px 0px;
   font-weight: 500;
-  margin-bottom: 10px;
   cursor: pointer;
   font-size: 12px;
   line-height: 20px;
+  font-family: "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, sans-serif;
 }
 
 .service-desc {
@@ -773,6 +859,9 @@ const formatDate = (dateString) => {
   color: #646464;
   line-height: 20px;
   margin: 0;
+  text-align: left;
+  font-family: "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, sans-serif;
 }
 
 .example-questions {
@@ -786,6 +875,14 @@ const formatDate = (dateString) => {
   color: rgba(100, 100, 100, 0.8);
   font-size: 12px;
   font-weight: 400;
+  font-family: "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, sans-serif;
+}
+
+.question-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .question-item {
@@ -794,10 +891,10 @@ const formatDate = (dateString) => {
   padding: 9px 8px;
   background: #ffffff;
   border-radius: 8px;
-  margin-bottom: 12px;
   cursor: pointer;
   transition: background-color 0.2s;
   gap: 6px;
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .question-item:hover {
@@ -807,6 +904,7 @@ const formatDate = (dateString) => {
 .question-icon {
   display: flex;
   align-items: center;
+  flex-shrink: 0;
 }
 
 .question-text {
@@ -815,11 +913,14 @@ const formatDate = (dateString) => {
   color: #000000;
   line-height: 22px;
   text-align: left;
+  font-family: "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, sans-serif;
 }
 
 .arrow-icon {
   display: flex;
   align-items: center;
+  flex-shrink: 0;
 }
 
 /* 自定义用户消息 */
@@ -832,10 +933,19 @@ const formatDate = (dateString) => {
 
 .message-bubble {
   background: #e3f2fd;
-  border-radius: 12px;
+  border-radius: 12px 0 12px 12px;
   padding: 12px 16px;
   max-width: 70%;
   word-wrap: break-word;
+  background: #0032ff1a;
+}
+
+.message-header-left-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #0032ff;
+  margin-left: 10px;
 }
 
 /* 自定义消息操作 */
