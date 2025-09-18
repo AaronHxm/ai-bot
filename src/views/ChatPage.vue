@@ -3,7 +3,7 @@
     <!-- 使用SDK的View组件，并通过插槽自定义各个部分 -->
     <View
         ref="chatView"
-        :showSider="false"
+        :showSider="siderOpen"
         :contentProps="{
         hideMessageAction: false,
         hideEditSource: false,
@@ -14,12 +14,12 @@
         :style="viewBackgroundStyle"
     >
       <!-- 自定义会话列表头部 -->
+      <!-- 自定义会话列表头部 -->
       <template #SessionList_header="{ toggleOpen, open }">
         <div class="custom-session-header">
           <h2 class="session-title">消息列表</h2>
           <el-button
               @click="toggleOpen"
-              :icon="Close"
               size="small"
               text
               class="close-btn"
@@ -57,7 +57,6 @@
                       @command="(command) => handleCommand(command, item)"
                   >
                     <el-button
-                        :icon="More"
                         size="small"
                         text
                         class="action-btn"
@@ -97,7 +96,6 @@
                       @command="(command) => handleCommand(command, item)"
                   >
                     <el-button
-                        :icon="More"
                         size="small"
                         text
                         class="action-btn"
@@ -244,38 +242,6 @@
         </div>
       </template>
 
-      <!-- 自定义消息底部操作 -->
-      <template #ChatContent_bottomActions="{ copy, voteType, feedback }">
-        <div class="bottom-actions">
-          <!-- 点赞按钮 -->
-          <el-button
-              :icon="Thumb"
-              size="small"
-              :type="voteType === 'like' ? 'primary' : 'text'"
-              @click="feedback('like')"
-              class="action-btn"
-          />
-
-          <!-- 点踩按钮 -->
-          <el-button
-              :icon="CircleClose"
-              size="small"
-              :type="voteType === 'dislike' ? 'danger' : 'text'"
-              @click="feedback('dislike')"
-              class="action-btn"
-          />
-
-          <!-- 复制按钮 -->
-          <el-button
-              :icon="DocumentCopy"
-              size="small"
-              text
-              @click="copy"
-              class="action-btn"
-          />
-        </div>
-      </template>
-
       <!-- 自定义新建聊天按钮 -->
       <template #ChatInput_newChat="{ onNewSession }">
         <button
@@ -335,11 +301,12 @@ import {
   CircleClose,
   DocumentCopy,
   ArrowLeft,
-  ArrowRight, More, Close,
+  ArrowRight,
 } from "@element-plus/icons-vue";
 import questionIcon from "../assets/question.svg";
 
 const userInput = ref("");
+const open = ref(true);
 const chatView = ref(null);
 
 // 预定义的背景样式选项
@@ -351,18 +318,18 @@ const backgroundOptions = {
   screenshotGradient:
       "linear-gradient(135deg, rgba(0, 50, 255, 0.03) 0%, rgba(43, 145, 255, 0.05) 30%, rgba(85, 240, 255, 0.03) 70%), linear-gradient(180deg, rgba(248, 250, 252, 0.8) 0%, rgba(245, 245, 245, 0.9) 50%, rgba(240, 240, 240, 0.95) 100%)",
 };
-const siderOpen = ref(false)
+
+// View 组件的背景样式
+const viewBackgroundStyle = ref({
+  background: backgroundOptions.screenshotGradient,
+});
+const siderOpen = ref(true)
 
 const handleSiderToggle = () => {
   siderOpen.value = !siderOpen.value
   // 这里需要调用 SDK 的方法来实际切换侧边栏
   // 可能需要使用 provide/inject 或其他状态管理方式
 }
-// View 组件的背景样式
-const viewBackgroundStyle = ref({
-  background: backgroundOptions.screenshotGradient,
-});
-
 // 新建会话的方法
 const handleNewSession = () => {
   // 尝试通过发送特殊消息来触发新会话
@@ -556,6 +523,49 @@ const formatDate = (dateString) => {
   linear-gradient(180deg, rgba(245, 245, 245, 0) 0%, #f5f5f5 30%);
 }
 
+/* 自定义会话列表头部 */
+.custom-session-header {
+  background-color: rebeccapurple;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  background: white;
+  /* border-bottom: 1px solid #e9ecef; */
+  height: 56px;
+  box-sizing: border-box;
+}
+
+.session-title {
+  position: absolute;
+  width: 64px;
+  height: 24px;
+  left: 16px;
+  top: 16px;
+  font-family: "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI",
+  Roboto, sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+  color: #0032ff;
+  margin: 0;
+}
+
+.close-btn {
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  padding: 4px;
+  color: #666;
+}
+
+.close-btn:hover {
+  color: #333;
+  background-color: #f5f7fa;
+  border-radius: 4px;
+}
 /* 自定义会话列表头部 */
 .custom-session-header {
   background-color: rebeccapurple;
