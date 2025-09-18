@@ -2,6 +2,7 @@
   <div class="chat-container">
     <!-- 使用SDK的View组件，并通过插槽自定义各个部分 -->
     <View
+      ref="chatView"
       :showSider="true"
       :contentProps="{
         hideMessageAction: false,
@@ -132,9 +133,32 @@
       <template #ChatBegin_default="{ send, config }">
         <div class="welcome-screen">
           <div class="welcome-header">
+            <!-- 侧边栏按钮 -->
+            <button class="new-chat-button" @click="handleNewSession">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path
+                  d="M10 4V16M4 10H16"
+                  stroke="#000000"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                />
+              </svg>
+            </button>
+
             <div class="coherent-logo">
               <img :src="coherentLogo" alt="coherent-logo" />
             </div>
+            <!-- 新建聊天按钮 -->
+            <button class="new-chat-button" @click="handleNewSession">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path
+                  d="M10 4V16M4 10H16"
+                  stroke="#000000"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                />
+              </svg>
+            </button>
           </div>
 
           <div class="welcome-box">
@@ -323,6 +347,24 @@
         </div>
       </template>
 
+      <!-- 自定义新建聊天按钮 -->
+      <template #ChatInput_newChat="{ onNewSession }">
+        <button
+          style="display: none"
+          class="new-chat-button"
+          @click="onNewSession"
+        >
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <path
+              d="M10 4V16M4 10H16"
+              stroke="#000000"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+          </svg>
+        </button>
+      </template>
+
       <!-- 自定义输入区域 -->
       <template #ChatInput_input="{ send, loading }">
         <div class="custom-input-area">
@@ -348,20 +390,6 @@
           </button>
         </div>
       </template>
-
-      <!-- 自定义新建聊天按钮 -->
-      <template #ChatInput_newChat="{ onNewSession }">
-        <button class="new-chat-button" @click="onNewSession">
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-            <path
-              d="M10 4V16M4 10H16"
-              stroke="#000000"
-              stroke-width="2"
-              stroke-linecap="round"
-            />
-          </svg>
-        </button>
-      </template>
     </View>
   </div>
 </template>
@@ -383,6 +411,30 @@ import {
 
 const userInput = ref("");
 const open = ref(true);
+const chatView = ref(null);
+
+// 新建会话的方法
+const handleNewSession = () => {
+  // 尝试通过发送特殊消息来触发新会话
+  // 或者通过其他SDK提供的方法
+  console.log("尝试创建新会话");
+
+  // 方法1: 尝试调用SDK的方法
+  if (chatView.value && typeof chatView.value.createNewSession === "function") {
+    chatView.value.createNewSession();
+  } else if (
+    chatView.value &&
+    typeof chatView.value.newSession === "function"
+  ) {
+    chatView.value.newSession();
+  } else if (chatView.value && typeof chatView.value.reset === "function") {
+    chatView.value.reset();
+  } else {
+    // 方法2: 如果SDK没有提供直接方法，尝试刷新页面
+    console.log("SDK未提供新建会话方法，刷新页面");
+    window.location.reload();
+  }
+};
 
 const handleSend = (sendFunction) => {
   if (userInput.value.trim()) {
@@ -642,8 +694,7 @@ const formatDate = (dateString) => {
 }
 
 .session-item:hover {
-  /* border-color: #0032ff;
-  box-shadow: 0px 4px 12px rgba(0, 50, 255, 0.1); */
+  background-color: rgba(0, 50, 255, 0.05);
 }
 
 .session-content {
@@ -769,7 +820,12 @@ const formatDate = (dateString) => {
 }
 
 .welcome-header {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
 }
 
 .coherent-logo {
@@ -779,7 +835,6 @@ const formatDate = (dateString) => {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 15px;
 
   > img {
     width: 90px;
@@ -1040,6 +1095,12 @@ const formatDate = (dateString) => {
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.new-chat-button:hover {
+  background-color: rgba(0, 50, 255, 0.1);
 }
 
 /* 背景效果 */
