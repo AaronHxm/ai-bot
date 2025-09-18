@@ -12,12 +12,16 @@
       }"
     >
       <!-- 自定义会话列表头部 -->
-      <template #SessionList_header="{ toggleOpen }">
+      <template #SessionList_header="{ toggleOpen, open }">
         <div class="custom-session-header">
-          <h2>消息列表</h2>
-          <button @click="toggleOpen" class="toggle-btn">
-            {{ open ? "收起" : "展开" }}
-          </button>
+          <h2 class="session-title">消息列表</h2>
+          <el-button
+            @click="toggleOpen"
+            :icon="Close"
+            size="small"
+            text
+            class="close-btn"
+          />
         </div>
       </template>
 
@@ -30,42 +34,95 @@
           onDeleteSession,
         }"
       >
-        <div class="custom-session-list">
-          <div class="time-section">
-            <h3>今天</h3>
-            <div
-              v-for="(item, index) in recentData"
-              :key="'recent-' + index"
-              class="session-item"
-            >
-              <div class="session-content">
-                <p class="session-preview">{{ item.preview || "新会话" }}</p>
-                <span class="session-time">{{ formatTime(item.time) }}</span>
-              </div>
-              <div class="session-actions">
-                <button class="action-btn" @click="handleSessionAction(item)">
-                  ⋮
-                </button>
+        <div class="session-list-body">
+          <!-- 今天会话 -->
+          <div class="time-section" v-if="recentData && recentData.length > 0">
+            <div class="time-label">今天</div>
+            <div class="session-items">
+              <div
+                v-for="item in recentData"
+                :key="item.id"
+                class="session-item"
+                @click="handleSessionClick(item)"
+              >
+                <div class="session-content">
+                  {{ item.title || "未命名会话" }}
+                </div>
+                <div class="session-actions">
+                  <el-dropdown
+                    trigger="click"
+                    @command="(command) => handleCommand(command, item)"
+                  >
+                    <el-button
+                      :icon="More"
+                      size="small"
+                      text
+                      class="action-btn"
+                    />
+                    <template #dropdown>
+                      <el-dropdown-menu>
+                        <el-dropdown-item command="edit"
+                          >重命名</el-dropdown-item
+                        >
+                        <el-dropdown-item command="delete" divided
+                          >删除</el-dropdown-item
+                        >
+                      </el-dropdown-menu>
+                    </template>
+                  </el-dropdown>
+                </div>
               </div>
             </div>
           </div>
 
-          <div class="time-section">
-            <h3>更早</h3>
-            <div
-              v-for="(item, index) in oldData"
-              :key="'old-' + index"
-              class="session-item"
-            >
-              <div class="session-content">
-                <p class="session-preview">{{ item.preview || "历史会话" }}</p>
-                <span class="session-time">{{ formatTime(item.time) }}</span>
+          <!-- 更早会话 -->
+          <div class="time-section" v-if="oldData && oldData.length > 0">
+            <div class="time-label">更早</div>
+            <div class="session-items">
+              <div
+                v-for="item in oldData"
+                :key="item.id"
+                class="session-item"
+                @click="handleSessionClick(item)"
+              >
+                <div class="session-content">
+                  {{ item.title || "未命名会话" }}
+                </div>
+                <div class="session-actions">
+                  <el-dropdown
+                    trigger="click"
+                    @command="(command) => handleCommand(command, item)"
+                  >
+                    <el-button
+                      :icon="More"
+                      size="small"
+                      text
+                      class="action-btn"
+                    />
+                    <template #dropdown>
+                      <el-dropdown-menu>
+                        <el-dropdown-item command="edit"
+                          >重命名</el-dropdown-item
+                        >
+                        <el-dropdown-item command="delete" divided
+                          >删除</el-dropdown-item
+                        >
+                      </el-dropdown-menu>
+                    </template>
+                  </el-dropdown>
+                </div>
               </div>
-              <div class="session-actions">
-                <button class="action-btn" @click="handleSessionAction(item)">
-                  ⋮
-                </button>
-              </div>
+            </div>
+          </div>
+
+          <!-- 空状态 -->
+          <div
+            class="empty-state"
+            v-if="!recentData?.length && !oldData?.length"
+          >
+            <div class="empty-content">
+              <div class="empty-icon">💬</div>
+              <div class="empty-text">暂无会话记录</div>
             </div>
           </div>
         </div>
@@ -83,8 +140,7 @@
           <div class="welcome-box">
             <div class="welcome-message">
               <div>
-                <span>Hi~我是coherent公司的AI聊天助手</span>
-                <span>有什么问题随时问我吧～</span>
+                <span>{{ config?.bot?.name }}</span>
               </div>
               <img :src="robot" alt="robot" />
             </div>
@@ -92,8 +148,7 @@
             <div class="services-section">
               <span class="service-btn">我能为您提供多种服务</span>
               <p class="service-desc">
-                如果您有产品咨询、打样申请、报价、联系方式等方面的相关需求，
-                我会快速为您回应，同时为了更精准的服务您，可能会请您填写简单的问询表单，感谢您的支持~
+                {{ config?.bot?.description }}
               </p>
             </div>
           </div>
@@ -101,7 +156,7 @@
           <div class="example-questions">
             <h3>试一试:</h3>
             <div
-              v-for="(question, index) in exampleQuestions"
+              v-for="(question, index) in config?.bot?.begin?.questions"
               :key="index"
               class="question-item"
               @click="send(question)"
@@ -148,22 +203,51 @@
         </div>
       </template>
 
+      <!-- 自定义引用源显示 -->
+      <template #ChatContent_sourceItem="{ list }">
+        <div v-if="list && list.length > 0" class="link-sources">
+          <el-link
+            v-for="(source, index) in list"
+            :key="index"
+            :href="source.sourceUrl"
+            target="_blank"
+            :icon="Link"
+            class="source-link"
+          >
+            {{ source.sourceName || "参考链接" }}
+          </el-link>
+        </div>
+      </template>
+
       <!-- 自定义消息底部操作 -->
       <template #ChatContent_bottomActions="{ copy, voteType, feedback }">
-        <div class="custom-message-actions">
-          <button @click="copy" class="action-btn">复制</button>
-          <button
-            @click="() => feedback('like')"
-            :class="['action-btn', voteType === 'like' ? 'active' : '']"
-          >
-            👍
-          </button>
-          <button
-            @click="() => feedback('dislike')"
-            :class="['action-btn', voteType === 'dislike' ? 'active' : '']"
-          >
-            👎
-          </button>
+        <div class="bottom-actions">
+          <!-- 点赞按钮 -->
+          <el-button
+            :icon="Thumb"
+            size="small"
+            :type="voteType === 'like' ? 'primary' : 'text'"
+            @click="feedback('like')"
+            class="action-btn"
+          />
+
+          <!-- 点踩按钮 -->
+          <el-button
+            :icon="CircleClose"
+            size="small"
+            :type="voteType === 'dislike' ? 'danger' : 'text'"
+            @click="feedback('dislike')"
+            class="action-btn"
+          />
+
+          <!-- 复制按钮 -->
+          <el-button
+            :icon="DocumentCopy"
+            size="small"
+            text
+            @click="copy"
+            class="action-btn"
+          />
         </div>
       </template>
 
@@ -216,15 +300,16 @@ import { View } from "@custouch-open/zenative-chat-sdk-web";
 import "@custouch-open/zenative-chat-sdk-web/style";
 import coherentLogo from "../assets/coherent-logo-blue.png";
 import robot from "../assets/robot.png";
+import {
+  Link,
+  CircleClose,
+  DocumentCopy,
+  ArrowLeft,
+  ArrowRight,
+} from "@element-plus/icons-vue";
 
 const userInput = ref("");
 const open = ref(true);
-
-const exampleQuestions = [
-  "推荐一款用于平板显示的激光器",
-  "我想申请打样",
-  "怎么联系你们的销售人员?",
-];
 
 const handleSend = (sendFunction) => {
   if (userInput.value.trim()) {
@@ -245,9 +330,140 @@ const formatTime = (time) => {
     minute: "2-digit",
   });
 };
+
+const selectedSource = ref(null);
+
+// 处理源点击
+const handleSourceClick = (source) => {
+  console.log("点击源:", source);
+  // 可以根据需要实现不同的点击行为
+  if (source.type === "image") {
+    selectedSource.value = source;
+  } else {
+    handleOpenSource(source);
+  }
+};
+
+// 处理预览
+const handlePreview = (source) => {
+  selectedSource.value = source;
+};
+
+// 关闭预览
+const closePreview = () => {
+  selectedSource.value = null;
+};
+
+// 打开源文件
+const handleOpenSource = (source) => {
+  if (source.url) {
+    window.open(source.url, "_blank");
+  } else {
+    console.warn("源文件没有有效的URL:", source);
+  }
+};
+
+// 复制链接
+const handleCopyLink = async (source) => {
+  if (source.url) {
+    try {
+      await navigator.clipboard.writeText(source.url);
+      alert("链接已复制到剪贴板");
+    } catch (err) {
+      console.error("复制失败:", err);
+      // 降级方案
+      const textArea = document.createElement("textarea");
+      textArea.value = source.url;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textArea);
+      alert("链接已复制");
+    }
+  }
+};
+
+// 图片加载错误处理
+const handleImageError = (event) => {
+  event.target.src =
+    "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iI2YzZjNmMyIvPjx0ZXh0IHg9IjUwIiB5PSI1MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEwIiBmaWxsPSIjOTk5IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+5Zu+54KHImltYWdlIjwvdGV4dD48L3N2Zz4=";
+};
+
+// 文本截断
+const truncateText = (text, maxLength) => {
+  if (!text) return "";
+  return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
+};
+
+// 获取类型标签
+const getTypeLabel = (type) => {
+  const typeMap = {
+    pdf: "PDF文档",
+    word: "Word文档",
+    web: "网页",
+    image: "图片",
+    video: "视频",
+  };
+  return typeMap[type] || "文档";
+};
+
+// 格式化日期
+const formatDate = (dateString) => {
+  try {
+    return new Date(dateString).toLocaleDateString("zh-CN");
+  } catch {
+    return dateString;
+  }
+};
 </script>
 
 <style scoped>
+/* 自定义底部 复制 点赞 的样式 */
+
+.bottom-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+}
+
+.action-btn {
+  padding: 4px 8px;
+  min-width: 32px;
+}
+
+.action-btn:hover {
+  background-color: #f5f7fa;
+  border-radius: 4px;
+}
+
+/* 引用源的样式 */
+.link-sources {
+  margin: 8px 0;
+}
+
+.text-link {
+  color: #1890ff;
+  text-decoration: none;
+  font-size: 14px;
+  display: block;
+  margin-bottom: 6px;
+  padding: 2px 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.text-link:hover {
+  color: #40a9ff;
+  text-decoration: underline;
+}
+
+.link-icon {
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
 .chat-container {
   height: 100vh;
   width: 100vw;
@@ -256,96 +472,210 @@ const formatTime = (time) => {
 
 /* 自定义会话列表头部 */
 .custom-session-header {
+  position: relative;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 15px;
-  background: linear-gradient(0deg, #333333, #333333), rgba(179, 179, 179, 0.82);
-  background-blend-mode: color-dodge, normal;
-  backdrop-filter: blur(25px);
-  border-bottom: 0.25px solid #d5d5d5;
+  justify-content: space-between;
+  padding: 16px;
+  background: white;
+  border-bottom: 1px solid #e9ecef;
+  height: 56px;
+  box-sizing: border-box;
 }
 
-.custom-session-header h2 {
-  margin: 0;
-  font-size: 18px;
-  color: #000000;
+.session-title {
+  position: absolute;
+  width: 64px;
+  height: 24px;
+  left: 16px;
+  top: 16px;
+  font-family: "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, sans-serif;
+  font-style: normal;
   font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+  color: #0032ff;
+  margin: 0;
 }
 
-.toggle-btn {
-  background: none;
-  border: 1px solid #ddd;
-  padding: 5px 10px;
+.close-btn {
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  padding: 4px;
+  color: #666;
+}
+
+.close-btn:hover {
+  color: #333;
+  background-color: #f5f7fa;
   border-radius: 4px;
-  cursor: pointer;
-  font-size: 12px;
+}
+
+/* 确保字体样式正确应用 */
+.custom-session-header {
+  font-family: "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, sans-serif;
 }
 
 /* 自定义会话列表 */
-.custom-session-list {
-  padding: 15px;
+.session-list-body {
+  width: 375px;
+  height: 100%;
+  background: #f4faff;
+  overflow-y: auto;
+  padding: 0;
 }
 
 .time-section {
+  padding: 0 16px;
   margin-bottom: 20px;
 }
 
-.time-section h3 {
-  margin: 0 0 10px 0;
-  font-size: 14px;
-  color: #666;
-  font-weight: 600;
+.time-label {
+  font-family: "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+  color: rgba(100, 100, 100, 0.8);
+  margin-bottom: 12px;
+}
+
+.session-items {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .session-item {
   display: flex;
   align-items: center;
-  padding: 12px;
-  border-radius: 8px;
-  margin-bottom: 8px;
-  cursor: pointer;
-  transition: background-color 0.2s;
+  padding: 12px 16px;
   background: #ffffff;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
 }
 
 .session-item:hover {
-  background-color: #f0f0f0;
+  border-color: #0032ff;
+  box-shadow: 0px 4px 12px rgba(0, 50, 255, 0.1);
 }
 
 .session-content {
   flex: 1;
-}
-
-.session-preview {
-  margin: 0 0 5px 0;
+  font-family: "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, sans-serif;
+  font-style: normal;
+  font-weight: 400;
   font-size: 14px;
-  color: #333;
+  line-height: 16px;
+  color: #000000;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.session-time {
-  font-size: 12px;
-  color: #999;
-}
-
 .session-actions {
-  opacity: 0;
-  transition: opacity 0.2s;
-}
-
-.session-item:hover .session-actions {
-  opacity: 1;
+  flex-shrink: 0;
+  margin-left: 8px;
 }
 
 .action-btn {
-  background: none;
-  border: none;
-  font-size: 16px;
-  cursor: pointer;
-  padding: 5px;
+  padding: 4px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.session-item:hover .action-btn {
+  opacity: 1;
+}
+
+.empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  padding: 0 16px;
+}
+
+.empty-content {
+  text-align: center;
+}
+
+.empty-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.empty-text {
+  font-family: "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  color: rgba(100, 100, 100, 0.6);
+}
+
+/* 滚动条样式 */
+.session-list-body::-webkit-scrollbar {
+  width: 4px;
+}
+
+.session-list-body::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 2px;
+}
+
+.session-list-body::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 2px;
+}
+
+.session-list-body::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* 背景装饰元素 */
+.session-list-body::before {
+  content: "";
+  position: absolute;
+  width: 310px;
+  height: 310px;
+  left: -71px;
+  top: -90px;
+  background: #55f0ff;
+  opacity: 0.2;
+  filter: blur(60px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.session-list-body::after {
+  content: "";
+  position: absolute;
+  width: 310px;
+  height: 310px;
+  left: 136px;
+  top: -95px;
+  background: #0032ff;
+  opacity: 0.1;
+  filter: blur(60px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* 确保内容在背景之上 */
+.time-section,
+.empty-state {
+  position: relative;
+  z-index: 1;
 }
 
 /* 欢迎界面样式 */

@@ -11,6 +11,9 @@ importers:
       '@custouch-open/zenative-chat-sdk-web':
         specifier: ^0.0.10
         version: 0.0.10(copy-to-clipboard@3.3.3)(dayjs@1.11.18)(lodash-es@4.17.21)(markdown-it@14.1.0)(vue-i18n@11.1.12(vue@3.5.21))(vue@3.5.21)
+      '@element-plus/icons-vue':
+        specifier: ^2.3.2
+        version: 2.3.2(vue@3.5.21)
       copy-to-clipboard:
         specifier: ^3.3.3
         version: 3.3.3
