@@ -11,6 +11,7 @@
         showReferenceImgs: true,
         showTip: true,
       }"
+      :style="viewBackgroundStyle"
     >
       <!-- 自定义会话列表头部 -->
       <template #SessionList_header="{ toggleOpen, open }">
@@ -412,6 +413,18 @@ import {
 const userInput = ref("");
 const open = ref(true);
 const chatView = ref(null);
+
+// 预定义的背景样式选项
+const backgroundOptions = {
+  // 方法1: 线性渐变 - 蓝紫渐变
+  gradient1:
+    "linear-gradient(133.21deg, rgba(0, 50, 255, 0.1) 0%, rgba(43, 145, 255, 0.1) 31.95%, rgba(85, 240, 255, 0.1) 63.9%),linear-gradient(180deg, rgba(245, 245, 245, 0) 0%, #F5F5F5 30%)",
+};
+
+// View 组件的背景样式
+const viewBackgroundStyle = ref({
+  background: backgroundOptions.gradient1,
+});
 
 // 新建会话的方法
 const handleNewSession = () => {
