@@ -189,13 +189,7 @@
                 @click="send('推荐一款用于平板显示的激光器')"
               >
                 <div class="question-icon">
-                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                    <path
-                      d="M1.2 6C1.2 3.34903 3.34903 1.2 6 1.2C8.65097 1.2 10.8 3.34903 10.8 6C10.8 8.65097 8.65097 10.8 6 10.8C3.34903 10.8 1.2 8.65097 1.2 6Z"
-                      stroke="#0032FF"
-                      stroke-width="1.5"
-                    />
-                  </svg>
+                  <img :src="questionIcon" alt="question-icon" />
                 </div>
                 <span class="question-text">推荐一款用于平板显示的激光器</span>
                 <span class="arrow-icon">
@@ -220,13 +214,7 @@
 
               <div class="question-item" @click="send('我想申请打样')">
                 <div class="question-icon">
-                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                    <path
-                      d="M1.2 6C1.2 3.34903 3.34903 1.2 6 1.2C8.65097 1.2 10.8 3.34903 10.8 6C10.8 8.65097 8.65097 10.8 6 10.8C3.34903 10.8 1.2 8.65097 1.2 6Z"
-                      stroke="#0032FF"
-                      stroke-width="1.5"
-                    />
-                  </svg>
+                  <img :src="questionIcon" alt="question-icon" />
                 </div>
                 <span class="question-text">我想申请打样</span>
                 <span class="arrow-icon">
@@ -254,13 +242,7 @@
                 @click="send('怎么联系你们的销售人员?')"
               >
                 <div class="question-icon">
-                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                    <path
-                      d="M1.2 6C1.2 3.34903 3.34903 1.2 6 1.2C8.65097 1.2 10.8 3.34903 10.8 6C10.8 8.65097 8.65097 10.8 6 10.8C3.34903 10.8 1.2 8.65097 1.2 6Z"
-                      stroke="#0032FF"
-                      stroke-width="1.5"
-                    />
-                  </svg>
+                  <img :src="questionIcon" alt="question-icon" />
                 </div>
                 <span class="question-text">怎么联系你们的销售人员?</span>
                 <span class="arrow-icon">
@@ -409,6 +391,7 @@ import {
   ArrowLeft,
   ArrowRight,
 } from "@element-plus/icons-vue";
+import questionIcon from "../assets/question.svg";
 
 const userInput = ref("");
 const open = ref(true);
@@ -828,7 +811,7 @@ const formatDate = (dateString) => {
 
 /* 欢迎界面样式 */
 .welcome-screen {
-  padding: 20px 0;
+  padding: 0 0 20px 0;
   text-align: center;
   max-width: 600px;
   margin: 0 auto;
@@ -1166,5 +1149,9 @@ const formatDate = (dateString) => {
   justify-content: flex-start;
   text-align: left;
   margin-left: 5px;
+}
+
+:deep .i-shadow-sm {
+  display: none;
 }
 </style>
