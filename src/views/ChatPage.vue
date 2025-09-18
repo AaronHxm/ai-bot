@@ -2,36 +2,37 @@
   <div class="chat-container">
     <!-- 使用SDK的View组件，并通过插槽自定义各个部分 -->
     <View
-      ref="chatView"
-      :showSider="true"
-      :contentProps="{
+        ref="chatView"
+        :showSider="false"
+        :contentProps="{
         hideMessageAction: false,
         hideEditSource: false,
         showDebug: false,
         showReferenceImgs: true,
         showTip: true,
       }"
-      :style="viewBackgroundStyle"
+        :style="viewBackgroundStyle"
     >
       <!-- 自定义会话列表头部 -->
       <template #SessionList_header="{ toggleOpen, open }">
         <div class="custom-session-header">
           <h2 class="session-title">消息列表</h2>
           <el-button
-            @click="toggleOpen"
-            :icon="Close"
-            size="small"
-            text
-            class="close-btn"
+              @click="toggleOpen"
+              :icon="Close"
+              size="small"
+              text
+              class="close-btn"
           />
         </div>
       </template>
 
       <!-- 自定义会话列表内容 -->
       <template
-        #SessionList_body="{
+          #SessionList_body="{
           recentData,
           oldData,
+          handleSessionClick,
           onEditConfirm,
           onDeleteSession,
         }"
@@ -42,32 +43,32 @@
             <div class="time-label">今天</div>
             <div class="session-items">
               <div
-                v-for="item in recentData"
-                :key="item.id"
-                class="session-item"
-                @click="handleSessionClick(item)"
+                  v-for="item in recentData"
+                  :key="item.id"
+                  class="session-item"
+                  @click="handleSessionClick(item)"
               >
                 <div class="session-content">
                   {{ item.title || "未命名会话" }}
                 </div>
                 <div class="session-actions">
                   <el-dropdown
-                    trigger="click"
-                    @command="(command) => handleCommand(command, item)"
+                      trigger="click"
+                      @command="(command) => handleCommand(command, item)"
                   >
                     <el-button
-                      :icon="More"
-                      size="small"
-                      text
-                      class="action-btn"
+                        :icon="More"
+                        size="small"
+                        text
+                        class="action-btn"
                     />
                     <template #dropdown>
                       <el-dropdown-menu>
                         <el-dropdown-item command="edit"
-                          >重命名</el-dropdown-item
+                        >重命名</el-dropdown-item
                         >
                         <el-dropdown-item command="delete" divided
-                          >删除</el-dropdown-item
+                        >删除</el-dropdown-item
                         >
                       </el-dropdown-menu>
                     </template>
@@ -82,32 +83,32 @@
             <div class="time-label">更早</div>
             <div class="session-items">
               <div
-                v-for="item in oldData"
-                :key="item.id"
-                class="session-item"
-                @click="handleSessionClick(item)"
+                  v-for="item in oldData"
+                  :key="item.id"
+                  class="session-item"
+                  @click="handleSessionClick(item)"
               >
                 <div class="session-content">
                   {{ item.title || "未命名会话" }}
                 </div>
                 <div class="session-actions">
                   <el-dropdown
-                    trigger="click"
-                    @command="(command) => handleCommand(command, item)"
+                      trigger="click"
+                      @command="(command) => handleCommand(command, item)"
                   >
                     <el-button
-                      :icon="More"
-                      size="small"
-                      text
-                      class="action-btn"
+                        :icon="More"
+                        size="small"
+                        text
+                        class="action-btn"
                     />
                     <template #dropdown>
                       <el-dropdown-menu>
                         <el-dropdown-item command="edit"
-                          >重命名</el-dropdown-item
+                        >重命名</el-dropdown-item
                         >
                         <el-dropdown-item command="delete" divided
-                          >删除</el-dropdown-item
+                        >删除</el-dropdown-item
                         >
                       </el-dropdown-menu>
                     </template>
@@ -119,8 +120,8 @@
 
           <!-- 空状态 -->
           <div
-            class="empty-state"
-            v-if="!recentData?.length && !oldData?.length"
+              class="empty-state"
+              v-if="!recentData?.length && !oldData?.length"
           >
             <div class="empty-content">
               <div class="empty-icon">💬</div>
@@ -135,14 +136,11 @@
         <div class="welcome-screen">
           <div class="welcome-header">
             <!-- 侧边栏按钮 -->
-            <button class="new-chat-button" @click="handleNewSession">
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                <path
-                  d="M10 4V16M4 10H16"
-                  stroke="#000000"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                />
+            <button class="new-chat-button" @click="handleSiderToggle">
+              <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1 6H14" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M1 18H14" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M1 12H16" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
             </button>
 
@@ -151,21 +149,18 @@
             </div>
             <!-- 新建聊天按钮 -->
             <button class="new-chat-button" @click="handleNewSession">
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                <path
-                  d="M10 4V16M4 10H16"
-                  stroke="#000000"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                />
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12.0131 7.49552C11.8548 7.49542 11.7013 7.54995 11.5785 7.6499C11.4558 7.74986 11.3713 7.88911 11.3393 8.04414L11.3256 8.18164V11.3125H8.17957L8.04207 11.3263C7.88665 11.3578 7.74693 11.4421 7.64656 11.5649C7.5462 11.6877 7.49138 11.8414 7.49138 12C7.49138 12.1586 7.5462 12.3123 7.64656 12.4351C7.74693 12.5579 7.88665 12.6422 8.04207 12.6738L8.17957 12.6875H11.3256V15.8321C11.3256 16.0145 11.398 16.1893 11.5269 16.3183C11.6559 16.4472 11.8307 16.5196 12.0131 16.5196C12.1954 16.5196 12.3703 16.4472 12.4992 16.3183C12.6281 16.1893 12.7006 16.0145 12.7006 15.8321V12.6875H15.8273C16.0097 12.6875 16.1845 12.6151 16.3135 12.4862C16.4424 12.3572 16.5148 12.1824 16.5148 12C16.5148 11.8177 16.4424 11.6428 16.3135 11.5139C16.1845 11.3849 16.0097 11.3125 15.8273 11.3125H12.7006V8.18302L12.6868 8.04414C12.6551 7.88885 12.5707 7.74929 12.448 7.64906C12.3252 7.54884 12.1716 7.49411 12.0131 7.49414V7.49552Z" fill="black"/>
+                <path d="M11.9951 2.14813C10.1063 2.14907 8.25753 2.69296 6.6691 3.71502C5.08067 4.73708 3.81953 6.19423 3.03593 7.91285C2.25232 9.63148 1.97929 11.5391 2.24934 13.4086C2.5194 15.278 3.32117 17.0304 4.55913 18.457C4.03938 18.9809 3.39313 19.6313 2.93251 20.0919C2.29176 20.7326 2.72763 21.8519 3.65851 21.8519H11.9951C14.608 21.8519 17.1139 20.8139 18.9615 18.9663C20.809 17.1187 21.847 14.6129 21.847 12C21.847 9.38713 20.809 6.88126 18.9615 5.03368C17.1139 3.18609 14.608 2.14813 11.9951 2.14813ZM11.9951 3.52313C14.2433 3.52313 16.3995 4.41623 17.9892 6.00595C19.5789 7.59567 20.472 9.7518 20.472 12C20.472 14.2482 19.5789 16.4043 17.9892 17.9941C16.3995 19.5838 14.2433 20.4769 11.9951 20.4769H4.48901C5.01976 19.9461 5.61513 19.3508 6.00151 18.9589C6.12901 18.8295 6.20014 18.655 6.19937 18.4733C6.19859 18.2917 6.12598 18.1178 5.99738 17.9895C4.81321 16.8035 4.00716 15.2932 3.6811 13.6492C3.35503 12.0053 3.52358 10.3016 4.16545 8.75347C4.80731 7.20531 5.89369 5.88215 7.28729 4.95121C8.6809 4.02026 10.3192 3.5233 11.9951 3.52313Z" fill="black"/>
               </svg>
+
             </button>
           </div>
 
           <div class="welcome-box">
             <div class="welcome-message">
               <div class="welcome-text">
-                <div class="greeting">Hi~我是coherent公司的AI聊天助手</div>
+                <div class="greeting">{{ config?.bot?.name }}</div>
                 <div class="main-message">有什么问题随时问我吧~</div>
               </div>
               <div class="robot-avatar">
@@ -176,92 +171,43 @@
             <div class="services-section">
               <button class="service-btn">我能为您提供多种服务</button>
               <p class="service-desc">
-                如果您有产品咨询、打样申请、报价、联系方式等方面的相关需求,我会快速为您回应,同时为了更精准的服务您,可能会请您填写简单的问询表单,感谢您的支持~
+                {{ config?.bot?.description }}
               </p>
             </div>
           </div>
 
-          <div class="example-questions">
+          <div class="example-questions"  >
             <h3>试一试:</h3>
             <div class="question-list">
               <div
-                class="question-item"
-                @click="send('推荐一款用于平板显示的激光器')"
+                  v-for="(question, index) in config?.bot?.begin?.questions"
+                  :key="index"
+                  class="question-item"
+                  @click="send(question)"
               >
                 <div class="question-icon">
                   <img :src="questionIcon" alt="question-icon" />
                 </div>
-                <span class="question-text">推荐一款用于平板显示的激光器</span>
-                <span class="arrow-icon">
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                    <path
-                      d="M4 8H12"
-                      stroke="#646464"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                    <path
-                      d="M8 4L12 8L8 12"
-                      stroke="#646464"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
-                </span>
-              </div>
 
-              <div class="question-item" @click="send('我想申请打样')">
-                <div class="question-icon">
-                  <img :src="questionIcon" alt="question-icon" />
-                </div>
-                <span class="question-text">我想申请打样</span>
+                <span class="question-text">{{ question }}</span>
                 <span class="arrow-icon">
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+               <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                     <path
-                      d="M4 8H12"
-                      stroke="#646464"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
+                        d="M4 8H12"
+                        stroke="#646464"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
                     />
                     <path
-                      d="M8 4L12 8L8 12"
-                      stroke="#646464"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
+                        d="M8 4L12 8L8 12"
+                        stroke="#646464"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
                     />
                   </svg>
-                </span>
-              </div>
 
-              <div
-                class="question-item"
-                @click="send('怎么联系你们的销售人员?')"
-              >
-                <div class="question-icon">
-                  <img :src="questionIcon" alt="question-icon" />
-                </div>
-                <span class="question-text">怎么联系你们的销售人员?</span>
-                <span class="arrow-icon">
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                    <path
-                      d="M4 8H12"
-                      stroke="#646464"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                    <path
-                      d="M8 4L12 8L8 12"
-                      stroke="#646464"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
                 </span>
               </div>
             </div>
@@ -285,13 +231,13 @@
       <template #ChatContent_sourceItem="{ list }">
         <div v-if="list && list.length > 0" class="link-sources">
           <el-link
-            type="primary"
-            v-for="(source, index) in list"
-            :key="index"
-            :href="source.sourceUrl"
-            target="_blank"
-            :icon="Link"
-            class="source-link"
+              type="primary"
+              v-for="(source, index) in list"
+              :key="index"
+              :href="source.sourceUrl"
+              target="_blank"
+              :icon="Link"
+              class="source-link"
           >
             {{ source.sourceName || "参考链接" }}
           </el-link>
@@ -303,29 +249,29 @@
         <div class="bottom-actions">
           <!-- 点赞按钮 -->
           <el-button
-            :icon="Thumb"
-            size="small"
-            :type="voteType === 'like' ? 'primary' : 'text'"
-            @click="feedback('like')"
-            class="action-btn"
+              :icon="Thumb"
+              size="small"
+              :type="voteType === 'like' ? 'primary' : 'text'"
+              @click="feedback('like')"
+              class="action-btn"
           />
 
           <!-- 点踩按钮 -->
           <el-button
-            :icon="CircleClose"
-            size="small"
-            :type="voteType === 'dislike' ? 'danger' : 'text'"
-            @click="feedback('dislike')"
-            class="action-btn"
+              :icon="CircleClose"
+              size="small"
+              :type="voteType === 'dislike' ? 'danger' : 'text'"
+              @click="feedback('dislike')"
+              class="action-btn"
           />
 
           <!-- 复制按钮 -->
           <el-button
-            :icon="DocumentCopy"
-            size="small"
-            text
-            @click="copy"
-            class="action-btn"
+              :icon="DocumentCopy"
+              size="small"
+              text
+              @click="copy"
+              class="action-btn"
           />
         </div>
       </template>
@@ -333,16 +279,16 @@
       <!-- 自定义新建聊天按钮 -->
       <template #ChatInput_newChat="{ onNewSession }">
         <button
-          style="display: none"
-          class="new-chat-button"
-          @click="onNewSession"
+            style="display: none"
+            class="new-chat-button"
+            @click="onNewSession"
         >
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
             <path
-              d="M10 4V16M4 10H16"
-              stroke="#000000"
-              stroke-width="2"
-              stroke-linecap="round"
+                d="M10 4V16M4 10H16"
+                stroke="#000000"
+                stroke-width="2"
+                stroke-linecap="round"
             />
           </svg>
         </button>
@@ -352,22 +298,22 @@
       <template #ChatInput_input="{ send, loading }">
         <div class="custom-input-area">
           <input
-            v-model="userInput"
-            type="text"
-            placeholder="请输入您的问题"
-            :disabled="loading"
-            @keyup.enter="handleSend(send)"
-            class="message-input"
+              v-model="userInput"
+              type="text"
+              placeholder="请输入您的问题"
+              :disabled="loading"
+              @keyup.enter="handleSend(send)"
+              class="message-input"
           />
           <button
-            @click="handleSend(send)"
-            :disabled="loading || !userInput.trim()"
-            class="send-btn"
+              @click="handleSend(send)"
+              :disabled="loading || !userInput.trim()"
+              class="send-btn"
           >
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
               <path
-                d="M2.90909 21L21.5455 12L2.90909 3L3 10.3636L15.5455 12L3 13.6364L2.90909 21Z"
-                fill="white"
+                  d="M2.90909 21L21.5455 12L2.90909 3L3 10.3636L15.5455 12L3 13.6364L2.90909 21Z"
+                  fill="white"
               />
             </svg>
           </button>
@@ -389,24 +335,29 @@ import {
   CircleClose,
   DocumentCopy,
   ArrowLeft,
-  ArrowRight,
+  ArrowRight, More, Close,
 } from "@element-plus/icons-vue";
 import questionIcon from "../assets/question.svg";
 
 const userInput = ref("");
-const open = ref(true);
 const chatView = ref(null);
 
 // 预定义的背景样式选项
 const backgroundOptions = {
   // 方法1: 线性渐变 - 蓝紫渐变
   gradient1:
-    "linear-gradient(133.21deg, rgba(0, 50, 255, 0.1) 0%, rgba(43, 145, 255, 0.1) 31.95%, rgba(85, 240, 255, 0.1) 63.9%),linear-gradient(180deg, rgba(245, 245, 245, 0) 0%, #F5F5F5 30%)",
+      "linear-gradient(133.21deg, rgba(0, 50, 255, 0.1) 0%, rgba(43, 145, 255, 0.1) 31.95%, rgba(85, 240, 255, 0.1) 63.9%),linear-gradient(180deg, rgba(245, 245, 245, 0) 0%, #F5F5F5 30%)",
   // 截图匹配的渐变背景 - 更淡的蓝紫色调，越往下越接近灰色
   screenshotGradient:
-    "linear-gradient(135deg, rgba(0, 50, 255, 0.03) 0%, rgba(43, 145, 255, 0.05) 30%, rgba(85, 240, 255, 0.03) 70%), linear-gradient(180deg, rgba(248, 250, 252, 0.8) 0%, rgba(245, 245, 245, 0.9) 50%, rgba(240, 240, 240, 0.95) 100%)",
+      "linear-gradient(135deg, rgba(0, 50, 255, 0.03) 0%, rgba(43, 145, 255, 0.05) 30%, rgba(85, 240, 255, 0.03) 70%), linear-gradient(180deg, rgba(248, 250, 252, 0.8) 0%, rgba(245, 245, 245, 0.9) 50%, rgba(240, 240, 240, 0.95) 100%)",
 };
+const siderOpen = ref(false)
 
+const handleSiderToggle = () => {
+  siderOpen.value = !siderOpen.value
+  // 这里需要调用 SDK 的方法来实际切换侧边栏
+  // 可能需要使用 provide/inject 或其他状态管理方式
+}
 // View 组件的背景样式
 const viewBackgroundStyle = ref({
   background: backgroundOptions.screenshotGradient,
@@ -422,8 +373,8 @@ const handleNewSession = () => {
   if (chatView.value && typeof chatView.value.createNewSession === "function") {
     chatView.value.createNewSession();
   } else if (
-    chatView.value &&
-    typeof chatView.value.newSession === "function"
+      chatView.value &&
+      typeof chatView.value.newSession === "function"
   ) {
     chatView.value.newSession();
   } else if (chatView.value && typeof chatView.value.reset === "function") {
@@ -510,7 +461,7 @@ const handleCopyLink = async (source) => {
 // 图片加载错误处理
 const handleImageError = (event) => {
   event.target.src =
-    "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iI2YzZjNmMyIvPjx0ZXh0IHg9IjUwIiB5PSI1MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEwIiBmaWxsPSIjOTk5IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+5Zu+54KHImltYWdlIjwvdGV4dD48L3N2Zz4=";
+      "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iI2YzZjNmMyIvPjx0ZXh0IHg9IjUwIiB5PSI1MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEwIiBmaWxsPSIjOTk5IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+5Zu+54KHImltYWdlIjwvdGV4dD48L3N2Zz4=";
 };
 
 // 文本截断
@@ -601,8 +552,8 @@ const formatDate = (dateString) => {
       rgba(0, 50, 255, 0.1) 0%,
       rgba(43, 145, 255, 0.1) 31.95%,
       rgba(85, 240, 255, 0.1) 63.9%
-    ),
-    linear-gradient(180deg, rgba(245, 245, 245, 0) 0%, #f5f5f5 30%);
+  ),
+  linear-gradient(180deg, rgba(245, 245, 245, 0) 0%, #f5f5f5 30%);
 }
 
 /* 自定义会话列表头部 */
@@ -626,7 +577,7 @@ const formatDate = (dateString) => {
   left: 16px;
   top: 16px;
   font-family: "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Roboto, sans-serif;
+  Roboto, sans-serif;
   font-style: normal;
   font-weight: 500;
   font-size: 16px;
@@ -665,7 +616,7 @@ const formatDate = (dateString) => {
 
 .time-label {
   font-family: "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Roboto, sans-serif;
+  Roboto, sans-serif;
   font-style: normal;
   font-weight: 400;
   font-size: 12px;
@@ -699,7 +650,7 @@ const formatDate = (dateString) => {
 .session-content {
   flex: 1;
   font-family: "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Roboto, sans-serif;
+  Roboto, sans-serif;
   font-style: normal;
   font-weight: 400;
   font-size: 14px;
@@ -746,7 +697,7 @@ const formatDate = (dateString) => {
 
 .empty-text {
   font-family: "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Roboto, sans-serif;
+  Roboto, sans-serif;
   font-style: normal;
   font-weight: 400;
   font-size: 14px;
@@ -845,10 +796,10 @@ const formatDate = (dateString) => {
   width: 343px;
   height: 207px;
   background: linear-gradient(
-    92.9deg,
-    rgba(0, 50, 255, 0.15) 0%,
-    rgba(43, 145, 255, 0.15) 47.61%,
-    rgba(85, 240, 255, 0.15) 95.22%
+      92.9deg,
+      rgba(0, 50, 255, 0.15) 0%,
+      rgba(43, 145, 255, 0.15) 47.61%,
+      rgba(85, 240, 255, 0.15) 95.22%
   );
   border-radius: 16px;
   overflow: hidden;
@@ -920,7 +871,7 @@ const formatDate = (dateString) => {
   font-size: 12px;
   line-height: 20px;
   font-family: "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Roboto, sans-serif;
+  Roboto, sans-serif;
 }
 
 .service-desc {
@@ -930,7 +881,7 @@ const formatDate = (dateString) => {
   margin: 0;
   text-align: left;
   font-family: "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Roboto, sans-serif;
+  Roboto, sans-serif;
 }
 
 .example-questions {
@@ -945,7 +896,7 @@ const formatDate = (dateString) => {
   font-size: 12px;
   font-weight: 400;
   font-family: "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Roboto, sans-serif;
+  Roboto, sans-serif;
 }
 
 .question-list {
@@ -983,7 +934,7 @@ const formatDate = (dateString) => {
   line-height: 22px;
   text-align: left;
   font-family: "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Roboto, sans-serif;
+  Roboto, sans-serif;
 }
 
 .arrow-icon {
@@ -1105,12 +1056,12 @@ const formatDate = (dateString) => {
 /* 背景效果 */
 :deep(.chat-content) {
   background: linear-gradient(180deg, rgba(245, 245, 245, 0) 0%, #f5f5f5 30%),
-    linear-gradient(
+  linear-gradient(
       133.21deg,
       rgba(0, 50, 255, 0.1) 0%,
       rgba(62, 121, 239, 0.1) 28.05%,
       rgba(85, 240, 255, 0.1) 63.9%
-    );
+  );
   position: relative;
 }
 
