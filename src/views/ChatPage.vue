@@ -26,7 +26,14 @@
       </template>
 
       <!-- 自定义会话列表内容 -->
-      <template #SessionList_body="{ recentData, oldData, onEditConfirm, onDeleteSession }">
+      <template
+          #SessionList_body="{
+          recentData,
+          oldData,
+          onEditConfirm,
+          onDeleteSession,
+        }"
+      >
         <div class="session-list-body">
           <!-- 今天会话 -->
           <div class="time-section" v-if="recentData && recentData.length > 0">
@@ -39,15 +46,29 @@
                   @click="handleSessionClick(item)"
               >
                 <div class="session-content">
-                  {{ item.title || '未命名会话' }}
+                  {{ item.title || "未命名会话" }}
                 </div>
                 <div class="session-actions">
-                  <el-dropdown trigger="click" @command="(command) => handleCommand(command, item)">
-                    <el-button :icon="More" size="small" text class="action-btn" />
+                  <el-dropdown
+                      trigger="click"
+                      @command="(command) => handleCommand(command, item)"
+                  >
+                    <el-button
+                        :icon="More"
+                        size="small"
+                        text
+                        class="action-btn"
+                    />
                     <template #dropdown>
                       <el-dropdown-menu>
-                        <el-dropdown-item command="edit">重命名</el-dropdown-item>
-                        <el-dropdown-item command="delete" divided>删除</el-dropdown-item>
+                        <el-dropdown-item command="edit"
+                        >重命名
+                        </el-dropdown-item
+                        >
+                        <el-dropdown-item command="delete" divided
+                        >删除
+                        </el-dropdown-item
+                        >
                       </el-dropdown-menu>
                     </template>
                   </el-dropdown>
@@ -67,15 +88,29 @@
                   @click="handleSessionClick(item)"
               >
                 <div class="session-content">
-                  {{ item.title || '未命名会话' }}
+                  {{ item.title || "未命名会话" }}
                 </div>
                 <div class="session-actions">
-                  <el-dropdown trigger="click" @command="(command) => handleCommand(command, item)">
-                    <el-button :icon="More" size="small" text class="action-btn" />
+                  <el-dropdown
+                      trigger="click"
+                      @command="(command) => handleCommand(command, item)"
+                  >
+                    <el-button
+                        :icon="More"
+                        size="small"
+                        text
+                        class="action-btn"
+                    />
                     <template #dropdown>
                       <el-dropdown-menu>
-                        <el-dropdown-item command="edit">重命名</el-dropdown-item>
-                        <el-dropdown-item command="delete" divided>删除</el-dropdown-item>
+                        <el-dropdown-item command="edit"
+                        >重命名
+                        </el-dropdown-item
+                        >
+                        <el-dropdown-item command="delete" divided
+                        >删除
+                        </el-dropdown-item
+                        >
                       </el-dropdown-menu>
                     </template>
                   </el-dropdown>
@@ -85,7 +120,10 @@
           </div>
 
           <!-- 空状态 -->
-          <div class="empty-state" v-if="!recentData?.length && !oldData?.length">
+          <div
+              class="empty-state"
+              v-if="!recentData?.length && !oldData?.length"
+          >
             <div class="empty-content">
               <div class="empty-icon">💬</div>
               <div class="empty-text">暂无会话记录</div>
@@ -105,14 +143,17 @@
 
           <div class="welcome-box">
             <div class="welcome-message">
-              <div>
-                <span>{{ config?.bot?.name }}</span>
+              <div class="welcome-text">
+                <div class="greeting">{{ config?.bot?.name }}</div>
+                <div class="main-message">有什么问题随时问我吧~</div>
               </div>
-              <img :src="robot" alt="robot"/>
+              <div class="robot-avatar">
+                <img :src="robot" alt="robot"/>
+              </div>
             </div>
 
             <div class="services-section">
-              <span class="service-btn">我能为您提供多种服务</span>
+              <button class="service-btn">我能为您提供多种服务</button>
               <p class="service-desc">
                 {{ config?.bot?.description }}
               </p>
@@ -121,23 +162,24 @@
 
           <div class="example-questions">
             <h3>试一试:</h3>
-            <div
-                v-for="(question, index) in config?.bot?.begin?.questions"
-                :key="index"
-                class="question-item"
-                @click="send(question)"
-            >
-              <div class="question-icon">
-                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                  <path
-                      d="M1.2 6C1.2 3.34903 3.34903 1.2 6 1.2C8.65097 1.2 10.8 3.34903 10.8 6C10.8 8.65097 8.65097 10.8 6 10.8C3.34903 10.8 1.2 8.65097 1.2 6Z"
-                      stroke="#0032FF"
-                      stroke-width="1.5"
-                  />
-                </svg>
-              </div>
-              <span class="question-text">{{ question }}</span>
-              <span class="arrow-icon">
+            <div class="question-list">
+              <div
+                  v-for="(question, index) in config?.bot?.begin?.questions"
+                  :key="index"
+                  class="question-item"
+                  @click="send(question)"
+              >
+                <div class="question-icon">
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                    <path
+                        d="M1.2 6C1.2 3.34903 3.34903 1.2 6 1.2C8.65097 1.2 10.8 3.34903 10.8 6C10.8 8.65097 8.65097 10.8 6 10.8C3.34903 10.8 1.2 8.65097 1.2 6Z"
+                        stroke="#0032FF"
+                        stroke-width="1.5"
+                    />
+                  </svg>
+                </div>
+                <span class="question-text">{{ question }}</span>
+                <span class="arrow-icon">
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                   <path
                       d="M4 8H12"
@@ -155,6 +197,7 @@
                   />
                 </svg>
               </span>
+              </div>
             </div>
           </div>
         </div>
@@ -165,6 +208,9 @@
         <div class="custom-user-message">
           <div class="message-bubble">
             {{ content }}
+          </div>
+          <div class="message-header-left-avatar">
+            <img :src="userAvatar" alt="user-avatar"/>
           </div>
         </div>
       </template>
@@ -180,7 +226,7 @@
               :icon="Link"
               class="source-link"
           >
-            {{ source.sourceName || '参考链接' }}
+            {{ source.sourceName || "参考链接" }}
           </el-link>
         </div>
       </template>
@@ -266,11 +312,17 @@ import {View} from "@custouch-open/zenative-chat-sdk-web";
 import "@custouch-open/zenative-chat-sdk-web/style";
 import coherentLogo from "../assets/coherent-logo-blue.png";
 import robot from "../assets/robot.png";
-import {Link, CircleClose, DocumentCopy,ArrowLeft, ArrowRight } from '@element-plus/icons-vue'
+import userAvatar from "../assets/Avatar.png";
+import {
+  Link,
+  CircleClose,
+  DocumentCopy,
+  ArrowLeft,
+  ArrowRight,
+} from "@element-plus/icons-vue";
 
 const userInput = ref("");
 const open = ref(true);
-
 
 const handleSend = (sendFunction) => {
   if (userInput.value.trim()) {
@@ -292,90 +344,90 @@ const formatTime = (time) => {
   });
 };
 
-
-const selectedSource = ref(null)
+const selectedSource = ref(null);
 
 // 处理源点击
 const handleSourceClick = (source) => {
-  console.log('点击源:', source)
+  console.log("点击源:", source);
   // 可以根据需要实现不同的点击行为
-  if (source.type === 'image') {
-    selectedSource.value = source
+  if (source.type === "image") {
+    selectedSource.value = source;
   } else {
-    handleOpenSource(source)
+    handleOpenSource(source);
   }
-}
+};
 
 // 处理预览
 const handlePreview = (source) => {
-  selectedSource.value = source
-}
+  selectedSource.value = source;
+};
 
 // 关闭预览
 const closePreview = () => {
-  selectedSource.value = null
-}
+  selectedSource.value = null;
+};
 
 // 打开源文件
 const handleOpenSource = (source) => {
   if (source.url) {
-    window.open(source.url, '_blank')
+    window.open(source.url, "_blank");
   } else {
-    console.warn('源文件没有有效的URL:', source)
+    console.warn("源文件没有有效的URL:", source);
   }
-}
+};
 
 // 复制链接
 const handleCopyLink = async (source) => {
   if (source.url) {
     try {
-      await navigator.clipboard.writeText(source.url)
-      alert('链接已复制到剪贴板')
+      await navigator.clipboard.writeText(source.url);
+      alert("链接已复制到剪贴板");
     } catch (err) {
-      console.error('复制失败:', err)
+      console.error("复制失败:", err);
       // 降级方案
-      const textArea = document.createElement('textarea')
-      textArea.value = source.url
-      document.body.appendChild(textArea)
-      textArea.select()
-      document.execCommand('copy')
-      document.body.removeChild(textArea)
-      alert('链接已复制')
+      const textArea = document.createElement("textarea");
+      textArea.value = source.url;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textArea);
+      alert("链接已复制");
     }
   }
-}
+};
 
 // 图片加载错误处理
 const handleImageError = (event) => {
-  event.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iI2YzZjNmMyIvPjx0ZXh0IHg9IjUwIiB5PSI1MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEwIiBmaWxsPSIjOTk5IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+5Zu+54KHImltYWdlIjwvdGV4dD48L3N2Zz4='
-}
+  event.target.src =
+      "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iI2YzZjNmMyIvPjx0ZXh0IHg9IjUwIiB5PSI1MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEwIiBmaWxsPSIjOTk5IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+5Zu+54KHImltYWdlIjwvdGV4dD48L3N2Zz4=";
+};
 
 // 文本截断
 const truncateText = (text, maxLength) => {
-  if (!text) return ''
-  return text.length > maxLength ? text.substring(0, maxLength) + '...' : text
-}
+  if (!text) return "";
+  return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
+};
 
 // 获取类型标签
 const getTypeLabel = (type) => {
   const typeMap = {
-    'pdf': 'PDF文档',
-    'word': 'Word文档',
-    'web': '网页',
-    'image': '图片',
-    'video': '视频'
-  }
-  return typeMap[type] || '文档'
-}
+    pdf: "PDF文档",
+    word: "Word文档",
+    web: "网页",
+    image: "图片",
+    video: "视频",
+  };
+  return typeMap[type] || "文档";
+};
 
 // 格式化日期
 const formatDate = (dateString) => {
   try {
-    return new Date(dateString).toLocaleDateString('zh-CN')
+    return new Date(dateString).toLocaleDateString("zh-CN");
   } catch {
-    return dateString
+    return dateString;
   }
-}
+};
 </script>
 
 <style scoped>
@@ -397,7 +449,6 @@ const formatDate = (dateString) => {
   background-color: #f5f7fa;
   border-radius: 4px;
 }
-
 
 /* 引用源的样式 */
 .link-sources {
@@ -434,13 +485,14 @@ const formatDate = (dateString) => {
 
 /* 自定义会话列表头部 */
 .custom-session-header {
+  background-color: rebeccapurple;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 16px;
   background: white;
-  border-bottom: 1px solid #e9ecef;
+  /* border-bottom: 1px solid #e9ecef; */
   height: 56px;
   box-sizing: border-box;
 }
@@ -451,12 +503,13 @@ const formatDate = (dateString) => {
   height: 24px;
   left: 16px;
   top: 16px;
-  font-family: 'PingFang SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI",
+  Roboto, sans-serif;
   font-style: normal;
   font-weight: 500;
   font-size: 16px;
   line-height: 24px;
-  color: #0032FF;
+  color: #0032ff;
   margin: 0;
 }
 
@@ -474,16 +527,11 @@ const formatDate = (dateString) => {
   border-radius: 4px;
 }
 
-/* 确保字体样式正确应用 */
-.custom-session-header {
-  font-family: 'PingFang SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-}
-
 /* 自定义会话列表 */
 .session-list-body {
-  width: 375px;
-  height: 100%;
-  background: #F4FAFF;
+  width: 100%;
+  height: calc(100% - 56px);
+  /* background: #f4faff; */
   overflow-y: auto;
   padding: 0;
 }
@@ -494,11 +542,13 @@ const formatDate = (dateString) => {
 }
 
 .time-label {
-  font-family: 'PingFang SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI",
+  Roboto, sans-serif;
   font-style: normal;
   font-weight: 400;
   font-size: 12px;
   line-height: 16px;
+  text-align: left;
   color: rgba(100, 100, 100, 0.8);
   margin-bottom: 12px;
 }
@@ -512,22 +562,23 @@ const formatDate = (dateString) => {
 .session-item {
   display: flex;
   align-items: center;
-  padding: 12px 16px;
-  background: #FFFFFF;
+  padding: 12px 16px 12px 0;
+  background: #ffffff;
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.2s ease;
-  border: 1px solid transparent;
+  /* border: 1px solid transparent; */
 }
 
 .session-item:hover {
-  border-color: #0032FF;
-  box-shadow: 0px 4px 12px rgba(0, 50, 255, 0.1);
+  /* border-color: #0032ff;
+  box-shadow: 0px 4px 12px rgba(0, 50, 255, 0.1); */
 }
 
 .session-content {
   flex: 1;
-  font-family: 'PingFang SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI",
+  Roboto, sans-serif;
   font-style: normal;
   font-weight: 400;
   font-size: 14px;
@@ -535,6 +586,7 @@ const formatDate = (dateString) => {
   color: #000000;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-align: left;
   white-space: nowrap;
 }
 
@@ -572,7 +624,8 @@ const formatDate = (dateString) => {
 }
 
 .empty-text {
-  font-family: 'PingFang SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI",
+  Roboto, sans-serif;
   font-style: normal;
   font-weight: 400;
   font-size: 14px;
@@ -600,14 +653,14 @@ const formatDate = (dateString) => {
 }
 
 /* 背景装饰元素 */
-.session-list-body::before {
-  content: '';
+/* .session-list-body::before {
+  content: "";
   position: absolute;
   width: 310px;
   height: 310px;
   left: -71px;
   top: -90px;
-  background: #55F0FF;
+  background: #55f0ff;
   opacity: 0.2;
   filter: blur(60px);
   pointer-events: none;
@@ -615,18 +668,18 @@ const formatDate = (dateString) => {
 }
 
 .session-list-body::after {
-  content: '';
+  content: "";
   position: absolute;
   width: 310px;
   height: 310px;
   left: 136px;
   top: -95px;
-  background: #0032FF;
+  background: #0032ff;
   opacity: 0.1;
   filter: blur(60px);
   pointer-events: none;
   z-index: 0;
-}
+} */
 
 /* 确保内容在背景之上 */
 .time-section,
@@ -674,29 +727,45 @@ const formatDate = (dateString) => {
   );
   border-radius: 16px;
   overflow: hidden;
+  position: relative;
+  margin: 0 auto 20px;
 }
 
 .welcome-message {
-  margin-bottom: 25px;
   display: flex;
-
-  > img {
-    width: 135px;
-  }
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 20px 0 0 10px;
+  height: 115px;
 }
 
-.welcome-message p {
-  margin: 5px 0;
-  color: #646464;
+.welcome-text {
+  flex: 1;
+  text-align: left;
+}
+
+.greeting {
   font-size: 12px;
+  color: #646464;
   line-height: 20px;
+  margin-bottom: 5px;
 }
 
-.welcome-message p:last-child {
+.main-message {
   font-size: 16px;
   font-weight: 600;
   color: #000000;
   line-height: 22px;
+}
+
+.robot-avatar {
+  flex-shrink: 0;
+}
+
+.robot-avatar img {
+  width: 135px;
+  height: 121px;
+  object-fit: contain;
 }
 
 .services-section {
@@ -706,23 +775,27 @@ const formatDate = (dateString) => {
   padding: 15px;
   backdrop-filter: blur(6px);
   position: relative;
-  margin-top: -30px;
 }
 
 .service-btn {
   position: absolute;
-  top: -36px;
+  width: 140px;
+  height: 20px;
+  top: -20px;
   left: 30px;
   background: #0032ff;
   color: white;
   border: none;
-  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 6px 6px 0px 0px;
   font-weight: 500;
-  margin-bottom: 10px;
   cursor: pointer;
   font-size: 12px;
   line-height: 20px;
+  font-family: "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI",
+  Roboto, sans-serif;
 }
 
 .service-desc {
@@ -730,6 +803,9 @@ const formatDate = (dateString) => {
   color: #646464;
   line-height: 20px;
   margin: 0;
+  text-align: left;
+  font-family: "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI",
+  Roboto, sans-serif;
 }
 
 .example-questions {
@@ -743,6 +819,14 @@ const formatDate = (dateString) => {
   color: rgba(100, 100, 100, 0.8);
   font-size: 12px;
   font-weight: 400;
+  font-family: "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI",
+  Roboto, sans-serif;
+}
+
+.question-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .question-item {
@@ -751,10 +835,10 @@ const formatDate = (dateString) => {
   padding: 9px 8px;
   background: #ffffff;
   border-radius: 8px;
-  margin-bottom: 12px;
   cursor: pointer;
   transition: background-color 0.2s;
   gap: 6px;
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .question-item:hover {
@@ -764,6 +848,7 @@ const formatDate = (dateString) => {
 .question-icon {
   display: flex;
   align-items: center;
+  flex-shrink: 0;
 }
 
 .question-text {
@@ -772,11 +857,14 @@ const formatDate = (dateString) => {
   color: #000000;
   line-height: 22px;
   text-align: left;
+  font-family: "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI",
+  Roboto, sans-serif;
 }
 
 .arrow-icon {
   display: flex;
   align-items: center;
+  flex-shrink: 0;
 }
 
 /* 自定义用户消息 */
@@ -789,10 +877,19 @@ const formatDate = (dateString) => {
 
 .message-bubble {
   background: #e3f2fd;
-  border-radius: 12px;
+  border-radius: 12px 0 12px 12px;
   padding: 12px 16px;
   max-width: 70%;
   word-wrap: break-word;
+  background: #0032ff1a;
+}
+
+.message-header-left-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #cbd3df;
+  margin-left: 10px;
 }
 
 /* 自定义消息操作 */
