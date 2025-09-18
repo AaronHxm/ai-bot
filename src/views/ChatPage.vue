@@ -419,11 +419,14 @@ const backgroundOptions = {
   // 方法1: 线性渐变 - 蓝紫渐变
   gradient1:
     "linear-gradient(133.21deg, rgba(0, 50, 255, 0.1) 0%, rgba(43, 145, 255, 0.1) 31.95%, rgba(85, 240, 255, 0.1) 63.9%),linear-gradient(180deg, rgba(245, 245, 245, 0) 0%, #F5F5F5 30%)",
+  // 截图匹配的渐变背景 - 更淡的蓝紫色调，越往下越接近灰色
+  screenshotGradient:
+    "linear-gradient(135deg, rgba(0, 50, 255, 0.03) 0%, rgba(43, 145, 255, 0.05) 30%, rgba(85, 240, 255, 0.03) 70%), linear-gradient(180deg, rgba(248, 250, 252, 0.8) 0%, rgba(245, 245, 245, 0.9) 50%, rgba(240, 240, 240, 0.95) 100%)",
 };
 
 // View 组件的背景样式
 const viewBackgroundStyle = ref({
-  background: backgroundOptions.gradient1,
+  background: backgroundOptions.screenshotGradient,
 });
 
 // 新建会话的方法
@@ -825,7 +828,7 @@ const formatDate = (dateString) => {
 
 /* 欢迎界面样式 */
 .welcome-screen {
-  padding: 20px;
+  padding: 20px 0;
   text-align: center;
   max-width: 600px;
   margin: 0 auto;
@@ -1058,8 +1061,8 @@ const formatDate = (dateString) => {
   display: flex;
   gap: 8px;
   padding: 8px 16px;
-  background: #ffffff;
-  border-top: 1px solid #e0e0e0;
+  /* background: #ffffff;
+  border-top: 1px solid #e0e0e0; */
   align-items: center;
 }
 
