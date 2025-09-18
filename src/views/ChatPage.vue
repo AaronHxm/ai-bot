@@ -268,7 +268,9 @@
           <div class="message-bubble">
             {{ content }}
           </div>
-          <div class="message-header-left-avatar"></div>
+          <div class="message-header-left-avatar">
+            <img :src="userAvatar" alt="user-avatar" />
+          </div>
         </div>
       </template>
 
@@ -276,6 +278,7 @@
       <template #ChatContent_sourceItem="{ list }">
         <div v-if="list && list.length > 0" class="link-sources">
           <el-link
+            type="primary"
             v-for="(source, index) in list"
             :key="index"
             :href="source.sourceUrl"
@@ -369,6 +372,7 @@ import { View } from "@custouch-open/zenative-chat-sdk-web";
 import "@custouch-open/zenative-chat-sdk-web/style";
 import coherentLogo from "../assets/coherent-logo-blue.png";
 import robot from "../assets/robot.png";
+import userAvatar from "../assets/Avatar.png";
 import {
   Link,
   CircleClose,
@@ -508,7 +512,11 @@ const formatDate = (dateString) => {
 
 /* 引用源的样式 */
 .link-sources {
+  width: 100%;
   margin: 8px 0;
+  padding: 12px;
+  border-radius: 8px;
+  background-color: rgba(0, 50, 255, 0.05);
 }
 
 .text-link {
@@ -537,6 +545,13 @@ const formatDate = (dateString) => {
   height: 100vh;
   width: 100vw;
   overflow: hidden;
+  background: linear-gradient(
+      133.21deg,
+      rgba(0, 50, 255, 0.1) 0%,
+      rgba(43, 145, 255, 0.1) 31.95%,
+      rgba(85, 240, 255, 0.1) 63.9%
+    ),
+    linear-gradient(180deg, rgba(245, 245, 245, 0) 0%, #f5f5f5 30%);
 }
 
 /* 自定义会话列表头部 */
@@ -944,7 +959,7 @@ const formatDate = (dateString) => {
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background: #0032ff;
+  background: #cbd3df;
   margin-left: 10px;
 }
 
@@ -978,6 +993,10 @@ const formatDate = (dateString) => {
   background: #ffffff;
   border-top: 1px solid #e0e0e0;
   align-items: center;
+}
+
+.source-link {
+  color: rgba(0, 50, 255, 1);
 }
 
 .message-input {
@@ -1059,5 +1078,16 @@ const formatDate = (dateString) => {
   opacity: 0.1;
   filter: blur(60px);
   pointer-events: none;
+}
+
+:deep .el-link {
+  width: 100%;
+  justify-content: flex-start;
+}
+
+:deep .el-link__inner {
+  justify-content: flex-start;
+  text-align: left;
+  margin-left: 5px;
 }
 </style>
