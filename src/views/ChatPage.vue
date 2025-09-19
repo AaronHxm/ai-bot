@@ -54,10 +54,7 @@
                   {{ item.title || "未命名会话" }}
                 </div>
                 <div class="session-actions">
-                  <el-dropdown
-                      trigger="click"
-
-                  >
+                  <el-dropdown trigger="click">
                     <el-button size="small" text class="action-btn">
                       <svg
                           width="16"
@@ -76,12 +73,57 @@
                     </el-button>
                     <template #dropdown>
                       <el-dropdown-menu>
-                        <el-dropdown-item  divided >重命名
-                        </el-dropdown-item >
-                        <el-dropdown-item @click="onDeleteSession(item.id)" divided
-                        >删除
-                        </el-dropdown-item
+                        <el-dropdown-item
+                            @click="openRenameDialog(item)"
+                            divided
                         >
+                          <div class="dropdown-item">
+                            <span>重命名</span>
+                            <svg
+                                width="16"
+                                height="16"
+                                viewBox="0 0 16 16"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                  fill-rule="evenodd"
+                                  clip-rule="evenodd"
+                                  d="M11.0365 1.52867C10.9114 1.40356 10.7417 1.33328 10.5648 1.33331C10.3879 1.33335 10.2183 1.40369 10.0933 1.52886L3.19494 8.43553C3.07009 8.56053 2.99996 8.72997 2.99996 8.90665V11.3333C2.99996 11.7015 3.29844 12 3.66663 12H6.10563C6.28249 12 6.4521 11.9297 6.57713 11.8046L13.4715 4.90728C13.7317 4.64695 13.7317 4.225 13.4715 3.96467L11.0365 1.52867ZM4.33329 9.18255L10.5651 2.94317L12.0573 4.43599L5.8294 10.6666H4.33329V9.18255ZM2.33329 13.3333C1.9651 13.3333 1.66663 13.6318 1.66663 14C1.66663 14.3682 1.9651 14.6666 2.33329 14.6666H14.3333C14.7015 14.6666 15 14.3682 15 14C15 13.6318 14.7015 13.3333 14.3333 13.3333H2.33329Z"
+                                  fill="#646464"
+                              />
+                            </svg>
+                          </div>
+                        </el-dropdown-item>
+                        <el-dropdown-item
+                            @click="onDeleteSession(item.id)"
+                            divided
+                        >
+                          <div class="dropdown-item">
+                            <span>删除</span>
+                            <svg
+                                width="16"
+                                height="16"
+                                viewBox="0 0 16 16"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <g clip-path="url(#clip0_31_926)">
+                                <path
+                                    fill-rule="evenodd"
+                                    clip-rule="evenodd"
+                                    d="M6.42963 0.666687C6.18616 0.666687 5.96206 0.799406 5.84503 1.0129L4.93848 2.66669H2.99996H1.33329C0.965103 2.66669 0.666626 2.96516 0.666626 3.33335C0.666626 3.70154 0.965103 4.00002 1.33329 4.00002H2.33329V14.6667C2.33329 15.0349 2.63177 15.3334 2.99996 15.3334H13C13.3681 15.3334 13.6666 15.0349 13.6666 14.6667V4.00002H14.6666C15.0348 4.00002 15.3333 3.70154 15.3333 3.33335C15.3333 2.96516 15.0348 2.66669 14.6666 2.66669H13H11.0653L10.1796 1.01788C10.0634 0.801609 9.83779 0.666687 9.59229 0.666687H6.42963ZM9.55175 2.66669L9.19364 2.00002H6.82444L6.459 2.66669H9.55175ZM5.33329 4.00002H3.66663V14H12.3333V4.00002H10.6666H5.33329ZM6.66663 6.00002C7.03482 6.00002 7.33329 6.2985 7.33329 6.66669V11C7.33329 11.3682 7.03482 11.6667 6.66663 11.6667C6.29844 11.6667 5.99996 11.3682 5.99996 11V6.66669C5.99996 6.2985 6.29844 6.00002 6.66663 6.00002ZM9.33329 6.00002C9.70148 6.00002 9.99996 6.2985 9.99996 6.66669V11C9.99996 11.3682 9.70148 11.6667 9.33329 11.6667C8.9651 11.6667 8.66663 11.3682 8.66663 11V6.66669C8.66663 6.2985 8.9651 6.00002 9.33329 6.00002Z"
+                                    fill="#646464"
+                                />
+                              </g>
+                              <defs>
+                                <clipPath id="clip0_31_926">
+                                  <rect width="16" height="16" fill="white" />
+                                </clipPath>
+                              </defs>
+                            </svg>
+                          </div>
+                        </el-dropdown-item>
                       </el-dropdown-menu>
                     </template>
                   </el-dropdown>
@@ -94,18 +136,12 @@
           <div class="time-section" v-if="oldData && oldData.length > 0">
             <div class="time-label">更早</div>
             <div class="session-items">
-              <div
-                  v-for="item in oldData"
-                  :key="item.id"
-                  class="session-item"
-              >
+              <div v-for="item in oldData" :key="item.id" class="session-item">
                 <div class="session-content">
                   {{ item.title || "未命名会话" }}
                 </div>
                 <div class="session-actions">
-                  <el-dropdown
-                      trigger="click"
-                  >
+                  <el-dropdown trigger="click">
                     <el-button size="small" text class="action-btn">
                       <svg
                           width="16"
@@ -124,14 +160,54 @@
                     </el-button>
                     <template #dropdown>
                       <el-dropdown-menu>
-                        <el-dropdown-item    divided
-                        >重命名
-                        </el-dropdown-item
+                        <el-dropdown-item @click="openRenameDialog(item)">
+                          <div class="dropdown-item">
+                            <span>重命名</span>
+                            <svg
+                                width="16"
+                                height="16"
+                                viewBox="0 0 16 16"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                  fill-rule="evenodd"
+                                  clip-rule="evenodd"
+                                  d="M11.0365 1.52867C10.9114 1.40356 10.7417 1.33328 10.5648 1.33331C10.3879 1.33335 10.2183 1.40369 10.0933 1.52886L3.19494 8.43553C3.07009 8.56053 2.99996 8.72997 2.99996 8.90665V11.3333C2.99996 11.7015 3.29844 12 3.66663 12H6.10563C6.28249 12 6.4521 11.9297 6.57713 11.8046L13.4715 4.90728C13.7317 4.64695 13.7317 4.225 13.4715 3.96467L11.0365 1.52867ZM4.33329 9.18255L10.5651 2.94317L12.0573 4.43599L5.8294 10.6666H4.33329V9.18255ZM2.33329 13.3333C1.9651 13.3333 1.66663 13.6318 1.66663 14C1.66663 14.3682 1.9651 14.6666 2.33329 14.6666H14.3333C14.7015 14.6666 15 14.3682 15 14C15 13.6318 14.7015 13.3333 14.3333 13.3333H2.33329Z"
+                                  fill="#646464"
+                              />
+                            </svg>
+                          </div>
+                        </el-dropdown-item>
+                        <el-dropdown-item
+                            @click="onDeleteSession(item.id)"
+                            divided
                         >
-                        <el-dropdown-item @click="onDeleteSession(item.id)" divided
-                        >删除
-                        </el-dropdown-item
-                        >
+                          <div class="dropdown-item">
+                            <span>删除</span>
+                            <svg
+                                width="16"
+                                height="16"
+                                viewBox="0 0 16 16"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <g clip-path="url(#clip0_31_926)">
+                                <path
+                                    fill-rule="evenodd"
+                                    clip-rule="evenodd"
+                                    d="M6.42963 0.666687C6.18616 0.666687 5.96206 0.799406 5.84503 1.0129L4.93848 2.66669H2.99996H1.33329C0.965103 2.66669 0.666626 2.96516 0.666626 3.33335C0.666626 3.70154 0.965103 4.00002 1.33329 4.00002H2.33329V14.6667C2.33329 15.0349 2.63177 15.3334 2.99996 15.3334H13C13.3681 15.3334 13.6666 15.0349 13.6666 14.6667V4.00002H14.6666C15.0348 4.00002 15.3333 3.70154 15.3333 3.33335C15.3333 2.96516 15.0348 2.66669 14.6666 2.66669H13H11.0653L10.1796 1.01788C10.0634 0.801609 9.83779 0.666687 9.59229 0.666687H6.42963ZM9.55175 2.66669L9.19364 2.00002H6.82444L6.459 2.66669H9.55175ZM5.33329 4.00002H3.66663V14H12.3333V4.00002H10.6666H5.33329ZM6.66663 6.00002C7.03482 6.00002 7.33329 6.2985 7.33329 6.66669V11C7.33329 11.3682 7.03482 11.6667 6.66663 11.6667C6.29844 11.6667 5.99996 11.3682 5.99996 11V6.66669C5.99996 6.2985 6.29844 6.00002 6.66663 6.00002ZM9.33329 6.00002C9.70148 6.00002 9.99996 6.2985 9.99996 6.66669V11C9.99996 11.3682 9.70148 11.6667 9.33329 11.6667C8.9651 11.6667 8.66663 11.3682 8.66663 11V6.66669C8.66663 6.2985 8.9651 6.00002 9.33329 6.00002Z"
+                                    fill="#646464"
+                                />
+                              </g>
+                              <defs>
+                                <clipPath id="clip0_31_926">
+                                  <rect width="16" height="16" fill="white" />
+                                </clipPath>
+                              </defs>
+                            </svg>
+                          </div>
+                        </el-dropdown-item>
                       </el-dropdown-menu>
                     </template>
                   </el-dropdown>
@@ -152,7 +228,6 @@
           </div>
         </div>
 
-
         <!-- 重命名弹窗 -->
         <el-dialog
             v-model="renameDialogVisible"
@@ -166,12 +241,12 @@
           />
 
           <template #footer>
-          <span class="dialog-footer">
-            <el-button @click="renameDialogVisible = false">取消</el-button>
-            <el-button type="primary" @click="onEditConfirm(currentItem)">
-              确认
-            </el-button>
-          </span>
+            <span class="dialog-footer">
+              <el-button @click="renameDialogVisible = false">取消</el-button>
+              <el-button type="primary" @click="onEditConfirm(currentItem)">
+                确认
+              </el-button>
+            </span>
           </template>
         </el-dialog>
       </template>
@@ -214,7 +289,7 @@
             </button>
 
             <div class="coherent-logo">
-              <img :src="coherentLogo" alt="coherent-logo"/>
+              <img :src="coherentLogo" alt="coherent-logo" />
             </div>
             <!-- 新建聊天按钮 -->
             <button class="new-chat-button" @click="handleNewSession">
@@ -244,7 +319,7 @@
                 <div class="main-message">有什么问题随时问我吧~</div>
               </div>
               <div class="robot-avatar">
-                <img :src="robot" alt="robot"/>
+                <img :src="robot" alt="robot" />
               </div>
             </div>
 
@@ -266,7 +341,7 @@
                   @click="send(question)"
               >
                 <div class="question-icon">
-                  <img :src="questionIcon" alt="question-icon"/>
+                  <img :src="questionIcon" alt="question-icon" />
                 </div>
 
                 <span class="question-text">{{ question }}</span>
@@ -301,7 +376,7 @@
             {{ content }}
           </div>
           <div class="message-header-left-avatar">
-            <img :src="userAvatar" alt="user-avatar"/>
+            <img :src="userAvatar" alt="user-avatar" />
           </div>
         </div>
       </template>
@@ -371,7 +446,7 @@
       <template #ChatContent_bottomActions="{ copy, voteType, feedback }">
         <div class="bottom-actions">
           <div class="bottom-actions-tip">
-            <Warning style="width: 1em; height: 1em; margin-right: 8px"/>
+            <Warning style="width: 1em; height: 1em; margin-right: 8px" />
             内容由AI生成，仅供参考
           </div>
           <!-- 复制按钮 -->
@@ -445,24 +520,20 @@ const userInput = ref("");
 const open = ref(true);
 const chatView = ref(null);
 
-
-
-const renameDialogVisible = ref(false)
+const renameDialogVisible = ref(false);
 const renameForm = reactive({
-  id: '',
-  title: ''
-})
-let currentItem = null
+  id: "",
+  title: "",
+});
+let currentItem = null;
 
 // 打开重命名弹窗
 const openRenameDialog = (item) => {
-  currentItem = item
-  renameForm.id = item.id
-  renameForm.title = item.title || ''
-  renameDialogVisible.value = true
-}
-
-
+  currentItem = item;
+  renameForm.id = item.id;
+  renameForm.title = item.title || "";
+  renameDialogVisible.value = true;
+};
 
 // 预定义的背景样式选项
 const backgroundOptions = {
@@ -488,12 +559,9 @@ const handleSiderToggle = () => {
       element.style.display = "block";
     } else {
       element.style.display = "none";
-      renameDialogVisible.value = false
+      renameDialogVisible.value = false;
     }
-    renameDialogVisible.value = false
-
   }
-
 };
 // 新建会话的方法
 const handleNewSession = () => {
@@ -525,11 +593,8 @@ const handleSend = (sendFunction) => {
   }
 };
 
-
-
 // 复制链接
 const handleCopyLink = async (source) => {
-
   if (source.url) {
     try {
       await navigator.clipboard.writeText(source.url);
@@ -547,11 +612,17 @@ const handleCopyLink = async (source) => {
     }
   }
 };
-
 </script>
 
 <style scoped>
 /* 自定义底部 复制 点赞 的样式 */
+
+.dropdown-item {
+  width: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 
 .bottom-actions {
   display: flex;
@@ -757,7 +828,7 @@ const handleCopyLink = async (source) => {
 }
 
 .session-item:hover {
-  background-color: rgba(0, 50, 255, 0.05);
+  /* background-color: rgba(0, 50, 255, 0.05); */
 }
 
 .session-content {
