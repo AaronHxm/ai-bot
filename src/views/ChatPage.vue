@@ -5,12 +5,12 @@
         ref="chatView"
         :showSider="false"
         :contentProps="{
-        hideMessageAction: false,
-        hideEditSource: false,
-        showDebug: false,
-        showReferenceImgs: true,
-        showTip: true,
-      }"
+          hideMessageAction: false,
+          hideEditSource: false,
+          showDebug: false,
+          showReferenceImgs: true,
+          showTip: true,
+        }"
         :style="viewBackgroundStyle"
     >
       <!-- 自定义会话列表头部 -->
@@ -74,7 +74,7 @@
                     <template #dropdown>
                       <el-dropdown-menu>
                         <el-dropdown-item
-                            @click="openRenameDialog(item)"
+                            @click="openRenameDialog(item,onEditConfirm)"
                             divided
                         >
                           <div class="dropdown-item">
@@ -160,7 +160,7 @@
                     </el-button>
                     <template #dropdown>
                       <el-dropdown-menu>
-                        <el-dropdown-item @click="openRenameDialog(item)">
+                        <el-dropdown-item @click="openRenameDialog(item,onEditConfirm)">
                           <div class="dropdown-item">
                             <span>重命名</span>
                             <svg
@@ -228,27 +228,7 @@
           </div>
         </div>
 
-        <!-- 重命名弹窗 -->
-        <el-dialog
-            v-model="renameDialogVisible"
-            title="重命名会话"
-            width="400px"
-        >
-          <el-input
-              v-model="renameForm.title"
-              placeholder="请输入会话名称"
-              clearable
-          />
 
-          <template #footer>
-            <span class="dialog-footer">
-              <el-button @click="renameDialogVisible = false">取消</el-button>
-              <el-button type="primary" @click="onEditConfirm(renameForm)">
-                确认
-              </el-button>
-            </span>
-          </template>
-        </el-dialog>
       </template>
 
       <!-- 自定义聊天开始页面 -->
@@ -515,6 +495,30 @@ import robot from "../assets/robot.png";
 import userAvatar from "../assets/Avatar.png";
 import {Link, Warning, CircleClose, More} from "@element-plus/icons-vue";
 import questionIcon from "../assets/question.svg";
+import {ElMessage, ElMessageBox} from "element-plus";
+
+const openRenameDialog = (item,onConfirm) => {
+  ElMessageBox.prompt('请输入新的会话名称', '重命名会话', {
+    confirmButtonText: '确认',
+    cancelButtonText: '取消',
+    inputValue: item.title, // 设置初始值为当前值
+    inputPattern: /^.{1,50}$/,
+    inputErrorMessage: '会话名称长度应在1-50个字符之间'
+  }).then(({ value }) => {
+    // 直接修改原对象的 title 属性
+    item.title = value.trim()
+
+    // 调用回调函数，传递修改后的对象
+    if (typeof onConfirm === 'function') {
+      onConfirm(item)
+    }
+    ElMessage.success('重命名成功！')
+  }).catch(() => {
+    // 用户取消的处理
+    ElMessage.info('取消重命名')
+  })
+}
+
 
 const userInput = ref("");
 const open = ref(true);
@@ -526,14 +530,14 @@ const renameForm = reactive({
   title: "",
 });
 let currentItem = null;
-
-// 打开重命名弹窗
-const openRenameDialog = (item) => {
-  currentItem = item;
-  renameForm.id = item.id;
-  renameForm.title = item.title || "";
-  renameDialogVisible.value = true;
-};
+//
+// // 打开重命名弹窗
+// const openRenameDialog = (item) => {
+//   currentItem = item;
+//   renameForm.id = item.id;
+//   renameForm.title = item.title || "";
+//   renameDialogVisible.value = true;
+// };
 
 // 预定义的背景样式选项
 const backgroundOptions = {
