@@ -537,16 +537,6 @@ const chatView = ref(null);
 // 存储onNewSession函数的ref
 const onNewSessionRef = ref(null);
 
-// 处理新建会话的点击事件
-const handleNewSessionClick = () => {
-  if (onNewSessionRef.value) {
-    // 优先使用SDK提供的onNewSession函数
-    onNewSessionRef.value();
-  } else {
-    // 如果SDK函数不可用，回退到原来的实现
-    handleNewSession();
-  }
-}
 
 const renameDialogVisible = ref(false);
 const renameForm = reactive({
@@ -591,29 +581,7 @@ const handleSiderToggle = () => {
     }
   }
 };
-// 新建会话的方法
-const handleNewSession = () => {
-  // 尝试通过发送特殊消息来触发新会话
-  // 或者通过其他SDK提供的方法
-  console.log("尝试创建新会话");
-  console.log("chatView",chatView);
-debugger
-  // 方法1: 尝试调用SDK的方法
-  if (chatView.value && typeof chatView.value.createNewSession === "function") {
-    chatView.value.createNewSession();
-  } else if (
-      chatView.value &&
-      typeof chatView.value.newSession === "function"
-  ) {
-    chatView.value.newSession();
-  } else if (chatView.value && typeof chatView.value.reset === "function") {
-    chatView.value.reset();
-  } else {
-    // 方法2: 如果SDK没有提供直接方法，尝试刷新页面
-    console.log("SDK未提供新建会话方法，刷新页面");
-    window.location.reload();
-  }
-};
+
 
 const handleSend = (sendFunction) => {
   if (userInput.value.trim()) {
