@@ -243,7 +243,7 @@
           <template #footer>
             <span class="dialog-footer">
               <el-button @click="renameDialogVisible = false">取消</el-button>
-              <el-button type="primary" @click="onEditConfirm(currentItem)">
+              <el-button type="primary" @click="onEditConfirm(renameForm)">
                 确认
               </el-button>
             </span>
