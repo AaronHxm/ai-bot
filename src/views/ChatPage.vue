@@ -126,7 +126,7 @@
                     </el-button>
                     <template #dropdown>
                       <el-dropdown-menu>
-                        <el-dropdown-item @click="onEditConfirm(item)" divided
+                        <el-dropdown-item  @click="openRenameDialog(item)" divided
                         >重命名
                         </el-dropdown-item
                         >
