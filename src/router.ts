@@ -7,7 +7,7 @@ import ChatPage from './views/ChatPage.vue'
 const router = createRouter({
   history: createWebHistory(),
   routes: [
-    { path: "/chat", component: ChatPage }
+    { path: "/", component: ChatPage }
   ]
 })
 
