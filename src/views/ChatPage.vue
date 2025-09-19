@@ -480,7 +480,6 @@ const backgroundOptions = {
 const viewBackgroundStyle = ref({
   background: backgroundOptions.screenshotGradient,
 });
-const siderOpen = ref(true);
 
 const handleSiderToggle = () => {
   const element = document.querySelector(".i-h-full.i-absolute.i-left-0");
@@ -527,23 +526,6 @@ const handleSend = (sendFunction) => {
 };
 
 
-const selectedSource = ref(null);
-
-
-
-// 关闭预览
-const closePreview = () => {
-  selectedSource.value = null;
-};
-
-// 打开源文件
-const handleOpenSource = (source) => {
-  if (source.url) {
-    window.open(source.url, "_blank");
-  } else {
-    console.warn("源文件没有有效的URL:", source);
-  }
-};
 
 // 复制链接
 const handleCopyLink = async (source) => {
@@ -566,38 +548,6 @@ const handleCopyLink = async (source) => {
   }
 };
 
-// 图片加载错误处理
-const handleImageError = (event) => {
-  event.target.src =
-      "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iI2YzZjNmMyIvPjx0ZXh0IHg9IjUwIiB5PSI1MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEwIiBmaWxsPSIjOTk5IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+5Zu+54KHImltYWdlIjwvdGV4dD48L3N2Zz4=";
-};
-
-// 文本截断
-const truncateText = (text, maxLength) => {
-  if (!text) return "";
-  return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
-};
-
-// 获取类型标签
-const getTypeLabel = (type) => {
-  const typeMap = {
-    pdf: "PDF文档",
-    word: "Word文档",
-    web: "网页",
-    image: "图片",
-    video: "视频",
-  };
-  return typeMap[type] || "文档";
-};
-
-// 格式化日期
-const formatDate = (dateString) => {
-  try {
-    return new Date(dateString).toLocaleDateString("zh-CN");
-  } catch {
-    return dateString;
-  }
-};
 </script>
 
 <style scoped>
