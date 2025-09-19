@@ -363,7 +363,7 @@
 
       <!-- 自定义引用源显示 -->
       <template #ChatContent_sourceItem="{ list }">
-        <div v-if="list && list.length > 0" class="link-sources">
+        <div v-if="list && list?.length > 0" class="link-sources">
           <el-link
               type="primary"
               v-for="(source, index) in list"
@@ -429,6 +429,7 @@
               />
             </svg>
           </button>
+
         </div>
       </template>
 
