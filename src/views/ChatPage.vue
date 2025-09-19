@@ -76,10 +76,8 @@
                     </el-button>
                     <template #dropdown>
                       <el-dropdown-menu>
-                        <el-dropdown-item @click="openRenameDialog(item)" divided
-                        >重命名
-                        </el-dropdown-item
-                        >
+                        <el-dropdown-item  divided >重命名
+                        </el-dropdown-item >
                         <el-dropdown-item @click="onDeleteSession(item.id)" divided
                         >删除
                         </el-dropdown-item
@@ -126,7 +124,7 @@
                     </el-button>
                     <template #dropdown>
                       <el-dropdown-menu>
-                        <el-dropdown-item  @click="openRenameDialog(item)" divided
+                        <el-dropdown-item    divided
                         >重命名
                         </el-dropdown-item
                         >
@@ -492,6 +490,8 @@ const handleSiderToggle = () => {
       element.style.display = "none";
       renameDialogVisible.value = false
     }
+    renameDialogVisible.value = false
+
   }
 
 };

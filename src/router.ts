@@ -1,8 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router' 
 import ChatPage from './views/ChatPage.vue'
 
- 
-
 // 创建路由实例
 const router = createRouter({
   history: createWebHistory(),
