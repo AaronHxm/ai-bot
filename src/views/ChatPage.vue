@@ -76,7 +76,7 @@
                     </el-button>
                     <template #dropdown>
                       <el-dropdown-menu>
-                        <el-dropdown-item @click="onEditConfirm(item)" divided
+                        <el-dropdown-item @click="openRenameDialog(item)" divided
                         >重命名
                         </el-dropdown-item
                         >
@@ -153,6 +153,29 @@
             </div>
           </div>
         </div>
+
+
+        <!-- 重命名弹窗 -->
+        <el-dialog
+            v-model="renameDialogVisible"
+            title="重命名会话"
+            width="400px"
+        >
+          <el-input
+              v-model="renameForm.title"
+              placeholder="请输入会话名称"
+              clearable
+          />
+
+          <template #footer>
+          <span class="dialog-footer">
+            <el-button @click="renameDialogVisible = false">取消</el-button>
+            <el-button type="primary" @click="onEditConfirm(currentItem)">
+              确认
+            </el-button>
+          </span>
+          </template>
+        </el-dialog>
       </template>
 
       <!-- 自定义聊天开始页面 -->
@@ -411,7 +434,7 @@
 </template>
 
 <script setup>
-import {ref} from "vue";
+import {reactive, ref} from "vue";
 import {View} from "@custouch-open/zenative-chat-sdk-web";
 import "@custouch-open/zenative-chat-sdk-web/style";
 import coherentLogo from "../assets/coherent-logo-blue.png";
@@ -423,6 +446,25 @@ import questionIcon from "../assets/question.svg";
 const userInput = ref("");
 const open = ref(true);
 const chatView = ref(null);
+
+
+
+const renameDialogVisible = ref(false)
+const renameForm = reactive({
+  id: '',
+  title: ''
+})
+let currentItem = null
+
+// 打开重命名弹窗
+const openRenameDialog = (item) => {
+  currentItem = item
+  renameForm.id = item.id
+  renameForm.title = item.title || ''
+  renameDialogVisible.value = true
+}
+
+
 
 // 预定义的背景样式选项
 const backgroundOptions = {
