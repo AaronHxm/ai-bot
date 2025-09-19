@@ -368,12 +368,12 @@
               type="primary"
               v-for="(source, index) in list"
               :key="index"
-              :href="source.sourceUrl"
+              :href="source?.sourceUrl"
               target="_blank"
               :icon="Link"
               class="source-link"
           >
-            {{ source.sourceName || "参考链接" }}
+            {{ source?.sourceName || "参考链接" }}
           </el-link>
         </div>
       </template>
