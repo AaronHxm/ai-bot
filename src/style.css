@@ -77,3 +77,14 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+
+
+
+div[data-dismissable-layer] {
+  max-width: calc(var(--reka-popper-available-width) - 40px);
+}
+
+/* div[data-dismissable-layer] .i-text-link{
+  display: none;
+} */

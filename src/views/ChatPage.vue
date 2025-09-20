@@ -5,17 +5,20 @@
         ref="chatView"
         :showSider="false"
         :contentProps="{
-          hideMessageAction: false,
-          hideEditSource: false,
-          showDebug: false,
-          showReferenceImgs: true,
-          showTip: true,
-        }"
+        hideMessageAction: false,
+        hideEditSource: false,
+        showDebug: false,
+        showReferenceImgs: false,
+        showTip: false,
+      }"
         :style="viewBackgroundStyle"
     >
       <!-- 自定义会话列表头部 -->
       <!-- 自定义会话列表头部 -->
       <template #SessionList_header="{ toggleOpen, open }">
+        <div style="display: none">
+          {{ (eventBus.toggleOpen = toggleOpen) }}
+        </div>
         <div class="custom-session-header">
           <h2 class="session-title">消息列表</h2>
           <CircleClose
@@ -26,7 +29,7 @@
               position: absolute;
               right: 5px;
             "
-              @click="handleSiderToggle"
+              @click="eventBus.toggleOpen && eventBus.toggleOpen()"
           />
         </div>
       </template>
@@ -74,7 +77,7 @@
                     <template #dropdown>
                       <el-dropdown-menu>
                         <el-dropdown-item
-                            @click="openRenameDialog(item,onEditConfirm)"
+                            @click="openRenameDialog(item, onEditConfirm)"
                             divided
                         >
                           <div class="dropdown-item">
@@ -160,7 +163,9 @@
                     </el-button>
                     <template #dropdown>
                       <el-dropdown-menu>
-                        <el-dropdown-item @click="openRenameDialog(item,onEditConfirm)">
+                        <el-dropdown-item
+                            @click="openRenameDialog(item, onEditConfirm)"
+                        >
                           <div class="dropdown-item">
                             <span>重命名</span>
                             <svg
@@ -227,8 +232,6 @@
             </div>
           </div>
         </div>
-
-
       </template>
 
       <!-- 自定义聊天开始页面 -->
@@ -236,7 +239,11 @@
         <div class="welcome-screen">
           <div class="welcome-header">
             <!-- 侧边栏按钮 -->
-            <button class="new-chat-button" @click="handleSiderToggle">
+            <el-button
+                type="text"
+                class="new-chat-button"
+                @click="eventBus.toggleOpen && eventBus.toggleOpen()"
+            >
               <svg
                   width="25"
                   height="24"
@@ -266,31 +273,34 @@
                     stroke-linejoin="round"
                 />
               </svg>
-            </button>
-
+            </el-button>
             <div class="coherent-logo">
               <img :src="coherentLogo" alt="coherent-logo" />
-              </div>
-              <!-- 新建聊天按钮 - 使用SDK提供的onNewSession函数 -->
-              <button class="new-chat-button"  @click="eventBus.onNewSession && eventBus.onNewSession()">
-                <svg
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                      d="M12.0131 7.49552C11.8548 7.49542 11.7013 7.54995 11.5785 7.6499C11.4558 7.74986 11.3713 7.88911 11.3393 8.04414L11.3256 8.18164V11.3125H8.17957L8.04207 11.3263C7.88665 11.3578 7.74693 11.4421 7.64656 11.5649C7.5462 11.6877 7.49138 11.8414 7.49138 12C7.49138 12.1586 7.5462 12.3123 7.64656 12.4351C7.74693 12.5579 7.88665 12.6422 8.04207 12.6738L8.17957 12.6875H11.3256V15.8321C11.3256 16.0145 11.398 16.1893 11.5269 16.3183C11.6559 16.4472 11.8307 16.5196 12.0131 16.5196C12.1954 16.5196 12.3703 16.4472 12.4992 16.3183C12.6281 16.1893 12.7006 16.0145 12.7006 15.8321V12.6875H15.8273C16.0097 12.6875 16.1845 12.6151 16.3135 12.4862C16.4424 12.3572 16.5148 12.1824 16.5148 12C16.5148 11.8177 16.4424 11.6428 16.3135 11.5139C16.1845 11.3849 16.0097 11.3125 15.8273 11.3125H12.7006V8.18302L12.6868 8.04414C12.6551 7.88885 12.5707 7.74929 12.448 7.64906C12.3252 7.54884 12.1716 7.49411 12.0131 7.49414V7.49552Z"
-                      fill="black"
-                  />
-                  <path
-                      d="M11.9951 2.14813C10.1063 2.14907 8.25753 2.69296 6.6691 3.71502C5.08067 4.73708 3.81953 6.19423 3.03593 7.91285C2.25232 9.63148 1.97929 11.5391 2.24934 13.4086C2.5194 15.278 3.32117 17.0304 4.55913 18.457C4.03938 18.9809 3.39313 19.6313 2.93251 20.0919C2.29176 20.7326 2.72763 21.8519 3.65851 21.8519H11.9951C14.608 21.8519 17.1139 20.8139 18.9615 18.9663C20.809 17.1187 21.847 14.6129 21.847 12C21.847 9.38713 20.809 6.88126 18.9615 5.03368C17.1139 3.18609 14.608 2.14813 11.9951 2.14813ZM11.9951 3.52313C14.2433 3.52313 16.3995 4.41623 17.9892 6.00595C19.5789 7.59567 20.472 9.7518 20.472 12C20.472 14.2482 19.5789 16.4043 17.9892 17.9941C16.3995 19.5838 14.2433 20.4769 11.9951 20.4769H4.48901C5.01976 19.9461 5.61513 19.3508 6.00151 18.9589C6.12901 18.8295 6.20014 18.655 6.19937 18.4733C6.19859 18.2917 6.12598 18.1178 5.99738 17.9895C4.81321 16.8035 4.00716 15.2932 3.6811 13.6492C3.35503 12.0053 3.52358 10.3016 4.16545 8.75347C4.80731 7.20531 5.89369 5.88215 7.28729 4.95121C8.6809 4.02026 10.3192 3.5233 11.9951 3.52313Z"
-                      fill="black"
-                  />
-                </svg>
-              </button>
             </div>
+            <!-- 新建聊天按钮 - 使用SDK提供的onNewSession函数 -->
+            <el-button
+                type="text"
+                class="new-chat-button"
+                @click="eventBus.onNewSession && eventBus.onNewSession()"
+            >
+              <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                    d="M12.0131 7.49552C11.8548 7.49542 11.7013 7.54995 11.5785 7.6499C11.4558 7.74986 11.3713 7.88911 11.3393 8.04414L11.3256 8.18164V11.3125H8.17957L8.04207 11.3263C7.88665 11.3578 7.74693 11.4421 7.64656 11.5649C7.5462 11.6877 7.49138 11.8414 7.49138 12C7.49138 12.1586 7.5462 12.3123 7.64656 12.4351C7.74693 12.5579 7.88665 12.6422 8.04207 12.6738L8.17957 12.6875H11.3256V15.8321C11.3256 16.0145 11.398 16.1893 11.5269 16.3183C11.6559 16.4472 11.8307 16.5196 12.0131 16.5196C12.1954 16.5196 12.3703 16.4472 12.4992 16.3183C12.6281 16.1893 12.7006 16.0145 12.7006 15.8321V12.6875H15.8273C16.0097 12.6875 16.1845 12.6151 16.3135 12.4862C16.4424 12.3572 16.5148 12.1824 16.5148 12C16.5148 11.8177 16.4424 11.6428 16.3135 11.5139C16.1845 11.3849 16.0097 11.3125 15.8273 11.3125H12.7006V8.18302L12.6868 8.04414C12.6551 7.88885 12.5707 7.74929 12.448 7.64906C12.3252 7.54884 12.1716 7.49411 12.0131 7.49414V7.49552Z"
+                    fill="black"
+                />
+                <path
+                    d="M11.9951 2.14813C10.1063 2.14907 8.25753 2.69296 6.6691 3.71502C5.08067 4.73708 3.81953 6.19423 3.03593 7.91285C2.25232 9.63148 1.97929 11.5391 2.24934 13.4086C2.5194 15.278 3.32117 17.0304 4.55913 18.457C4.03938 18.9809 3.39313 19.6313 2.93251 20.0919C2.29176 20.7326 2.72763 21.8519 3.65851 21.8519H11.9951C14.608 21.8519 17.1139 20.8139 18.9615 18.9663C20.809 17.1187 21.847 14.6129 21.847 12C21.847 9.38713 20.809 6.88126 18.9615 5.03368C17.1139 3.18609 14.608 2.14813 11.9951 2.14813ZM11.9951 3.52313C14.2433 3.52313 16.3995 4.41623 17.9892 6.00595C19.5789 7.59567 20.472 9.7518 20.472 12C20.472 14.2482 19.5789 16.4043 17.9892 17.9941C16.3995 19.5838 14.2433 20.4769 11.9951 20.4769H4.48901C5.01976 19.9461 5.61513 19.3508 6.00151 18.9589C6.12901 18.8295 6.20014 18.655 6.19937 18.4733C6.19859 18.2917 6.12598 18.1178 5.99738 17.9895C4.81321 16.8035 4.00716 15.2932 3.6811 13.6492C3.35503 12.0053 3.52358 10.3016 4.16545 8.75347C4.80731 7.20531 5.89369 5.88215 7.28729 4.95121C8.6809 4.02026 10.3192 3.5233 11.9951 3.52313Z"
+                    fill="black"
+                />
+              </svg>
+            </el-button>
+          </div>
 
           <div class="welcome-box">
             <div class="welcome-message">
@@ -361,49 +371,48 @@
         </div>
       </template>
 
-      <!-- 自定义引用源显示 -->
+      <!-- 自定义引用源显示 - 改为弹窗预览 -->
       <template #ChatContent_sourceItem="{ list }">
         <div v-if="list && list?.length > 0" class="link-sources">
           <el-link
               type="primary"
               v-for="(source, index) in list"
               :key="index"
-              :href="source?.sourceUrl"
-              target="_blank"
+              @click="handlePreview(source)"
               :icon="Link"
               class="source-link"
           >
-            {{ source?.sourceName || "参考链接" }}
+            {{ source?.sourceName || "预览文件" }}
           </el-link>
         </div>
       </template>
 
-
       <!-- 自定义新建聊天按钮，使用ChatInput_newChat插槽获取onNewSession函数 -->
       <template #ChatInput_newChat="{ onNewSession }">
+        <div style="display: none">
+          {{ (eventBus.onNewSession = onNewSession) }}
+        </div>
 
-        <div style="display: none;">{{ eventBus.onNewSession = onNewSession }}</div>
-
-<!--        &lt;!&ndash; 存储onNewSession函数到ref中 &ndash;&gt;-->
-<!--        <div ref="el => onNewSessionRef.value = onNewSession" style="display: none"></div>-->
-<!--        <button class="new-chat-button" @click="onNewSession">-->
-<!--          <svg-->
-<!--              width="24"-->
-<!--              height="24"-->
-<!--              viewBox="0 0 24 24"-->
-<!--              fill="none"-->
-<!--              xmlns="http://www.w3.org/2000/svg"-->
-<!--          >-->
-<!--            <path-->
-<!--                d="M12.0131 7.49552C11.8548 7.49542 11.7013 7.54995 11.5785 7.6499C11.4558 7.74986 11.3713 7.88911 11.3393 8.04414L11.3256 8.18164V11.3125H8.17957L8.04207 11.3263C7.88665 11.3578 7.74693 11.4421 7.64656 11.5649C7.5462 11.6877 7.49138 11.8414 7.49138 12C7.49138 12.1586 7.5462 12.3123 7.64656 12.4351C7.74693 12.5579 7.88665 12.6422 8.04207 12.6738L8.17957 12.6875H11.3256V15.8321C11.3256 16.0145 11.398 16.1893 11.5269 16.3183C11.6559 16.4472 11.8307 16.5196 12.0131 16.5196C12.1954 16.5196 12.3703 16.4472 12.4992 16.3183C12.6281 16.1893 12.7006 16.0145 12.7006 15.8321V12.6875H15.8273C16.0097 12.6875 16.1845 12.6151 16.3135 12.4862C16.4424 12.3572 16.5148 12.1824 16.5148 12C16.5148 11.8177 16.4424 11.6428 16.3135 11.5139C16.1845 11.3849 16.0097 11.3125 15.8273 11.3125H12.7006V8.18302L12.6868 8.04414C12.6551 7.88885 12.5707 7.74929 12.448 7.64906C12.3252 7.54884 12.1716 7.49411 12.0131 7.49414V7.49552Z"-->
-<!--                fill="black"-->
-<!--            />-->
-<!--            <path-->
-<!--                d="M11.9951 2.14813C10.1063 2.14907 8.25753 2.69296 6.6691 3.71502C5.08067 4.73708 3.81953 6.19423 3.03593 7.91285C2.25232 9.63148 1.97929 11.5391 2.24934 13.4086C2.5194 15.278 3.32117 17.0304 4.55913 18.457C4.03938 18.9809 3.39313 19.6313 2.93251 20.0919C2.29176 20.7326 2.72763 21.8519 3.65851 21.8519H11.9951C14.608 21.8519 17.1139 20.8139 18.9615 18.9663C20.809 17.1187 21.847 14.6129 21.847 12C21.847 9.38713 20.809 6.88126 18.9615 5.03368C17.1139 3.18609 14.608 2.14813 11.9951 2.14813ZM11.9951 3.52313C14.2433 3.52313 16.3995 4.41623 17.9892 6.00595C19.5789 7.59567 20.472 9.7518 20.472 12C20.472 14.2482 19.5789 16.4043 17.9892 17.9941C16.3995 19.5838 14.2433 20.4769 11.9951 20.4769H4.48901C5.01976 19.9461 5.61513 19.3508 6.00151 18.9589C6.12901 18.8295 6.20014 18.655 6.19937 18.4733C6.19859 18.2917 6.12598 18.1178 5.99738 17.9895C4.81321 16.8035 4.00716 15.2932 3.6811 13.6492C3.35503 12.0053 3.52358 10.3016 4.16545 8.75347C4.80731 7.20531 5.89369 5.88215 7.28729 4.95121C8.6809 4.02026 10.3192 3.5233 11.9951 3.52313Z"-->
-<!--                fill="black"-->
-<!--            />-->
-<!--          </svg>-->
-<!--        </button>-->
+        <!--        &lt;!&ndash; 存储onNewSession函数到ref中 &ndash;&gt;-->
+        <!--        <div ref="el => onNewSessionRef.value = onNewSession" style="display: none"></div>-->
+        <!--        <button class="new-chat-button" @click="onNewSession">-->
+        <!--          <svg-->
+        <!--              width="24"-->
+        <!--              height="24"-->
+        <!--              viewBox="0 0 24 24"-->
+        <!--              fill="none"-->
+        <!--              xmlns="http://www.w3.org/2000/svg"-->
+        <!--          >-->
+        <!--            <path-->
+        <!--                d="M12.0131 7.49552C11.8548 7.49542 11.7013 7.54995 11.5785 7.6499C11.4558 7.74986 11.3713 7.88911 11.3393 8.04414L11.3256 8.18164V11.3125H8.17957L8.04207 11.3263C7.88665 11.3578 7.74693 11.4421 7.64656 11.5649C7.5462 11.6877 7.49138 11.8414 7.49138 12C7.49138 12.1586 7.5462 12.3123 7.64656 12.4351C7.74693 12.5579 7.88665 12.6422 8.04207 12.6738L8.17957 12.6875H11.3256V15.8321C11.3256 16.0145 11.398 16.1893 11.5269 16.3183C11.6559 16.4472 11.8307 16.5196 12.0131 16.5196C12.1954 16.5196 12.3703 16.4472 12.4992 16.3183C12.6281 16.1893 12.7006 16.0145 12.7006 15.8321V12.6875H15.8273C16.0097 12.6875 16.1845 12.6151 16.3135 12.4862C16.4424 12.3572 16.5148 12.1824 16.5148 12C16.5148 11.8177 16.4424 11.6428 16.3135 11.5139C16.1845 11.3849 16.0097 11.3125 15.8273 11.3125H12.7006V8.18302L12.6868 8.04414C12.6551 7.88885 12.5707 7.74929 12.448 7.64906C12.3252 7.54884 12.1716 7.49411 12.0131 7.49414V7.49552Z"-->
+        <!--                fill="black"-->
+        <!--            />-->
+        <!--            <path-->
+        <!--                d="M11.9951 2.14813C10.1063 2.14907 8.25753 2.69296 6.6691 3.71502C5.08067 4.73708 3.81953 6.19423 3.03593 7.91285C2.25232 9.63148 1.97929 11.5391 2.24934 13.4086C2.5194 15.278 3.32117 17.0304 4.55913 18.457C4.03938 18.9809 3.39313 19.6313 2.93251 20.0919C2.29176 20.7326 2.72763 21.8519 3.65851 21.8519H11.9951C14.608 21.8519 17.1139 20.8139 18.9615 18.9663C20.809 17.1187 21.847 14.6129 21.847 12C21.847 9.38713 20.809 6.88126 18.9615 5.03368C17.1139 3.18609 14.608 2.14813 11.9951 2.14813ZM11.9951 3.52313C14.2433 3.52313 16.3995 4.41623 17.9892 6.00595C19.5789 7.59567 20.472 9.7518 20.472 12C20.472 14.2482 19.5789 16.4043 17.9892 17.9941C16.3995 19.5838 14.2433 20.4769 11.9951 20.4769H4.48901C5.01976 19.9461 5.61513 19.3508 6.00151 18.9589C6.12901 18.8295 6.20014 18.655 6.19937 18.4733C6.19859 18.2917 6.12598 18.1178 5.99738 17.9895C4.81321 16.8035 4.00716 15.2932 3.6811 13.6492C3.35503 12.0053 3.52358 10.3016 4.16545 8.75347C4.80731 7.20531 5.89369 5.88215 7.28729 4.95121C8.6809 4.02026 10.3192 3.5233 11.9951 3.52313Z"-->
+        <!--                fill="black"-->
+        <!--            />-->
+        <!--          </svg>-->
+        <!--        </button>-->
       </template>
 
       <!-- 自定义输入区域 -->
@@ -429,7 +438,6 @@
               />
             </svg>
           </button>
-
         </div>
       </template>
 
@@ -494,43 +502,142 @@
         </div>
       </template>
     </View>
+
+    <!-- 预览弹窗 -->
+    <el-dialog
+        v-model="previewDialogVisible"
+        title=""
+        width="80%"
+        :before-close="handleClosePreview"
+        class="preview-dialog"
+    >
+      <div class="preview-content">
+        <!-- 图片预览 -->
+        <div v-if="isImageFile" class="image-preview">
+          <img
+              :src="previewData?.sourceUrl"
+              :alt="previewData?.sourceName"
+              class="preview-image"
+          />
+        </div>
+
+        <!-- PDF预览 -->
+        <div v-else-if="isPdfFile" class="pdf-preview">
+          <iframe
+              :src="previewData?.sourceUrl"
+              class="preview-iframe"
+              frameborder="0"
+          ></iframe>
+        </div>
+
+        <!-- 文本预览 -->
+        <div v-else-if="isTextFile" class="text-preview">
+          <div class="text-content" v-html="textContent"></div>
+        </div>
+
+        <!-- 默认预览 -->
+        <div v-else class="default-preview">
+          <div class="preview-icon">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none">
+              <path
+                  d="M14 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.89 22 5.99 22H18C19.1 22 20 21.1 20 20V8L14 2Z"
+                  stroke="#0032ff"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+              />
+              <path
+                  d="M14 2V8H20"
+                  stroke="#0032ff"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+              />
+            </svg>
+          </div>
+          <div class="preview-info">
+            <h3>{{ previewData?.sourceName || "未知文件" }}</h3>
+            <p>该文件类型暂不支持在线预览</p>
+            <el-button type="primary" @click="handleDownload(previewData)">
+              <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  style="margin-right: 8px"
+              >
+                <path
+                    d="M8 1L8 11M8 11L4 7M8 11L12 7"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                />
+                <path
+                    d="M2 13L14 13"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                />
+              </svg>
+              下载文件
+            </el-button>
+          </div>
+        </div>
+      </div>
+
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button @click="handleClosePreview">关闭</el-button>
+          <el-button
+              type="primary"
+              @click="handleDownload(previewData)"
+              v-if="previewData"
+          >
+            下载文件
+          </el-button>
+        </div>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script setup>
-import {reactive, ref} from "vue";
-import {View} from "@custouch-open/zenative-chat-sdk-web";
+import { reactive, ref, computed } from "vue";
+import { View } from "@custouch-open/zenative-chat-sdk-web";
 import "@custouch-open/zenative-chat-sdk-web/style";
-import coherentLogo from "../assets/coherent-logo-blue.png";
 import robot from "../assets/robot.png";
 import userAvatar from "../assets/Avatar.png";
-import {Link, Warning, CircleClose, More} from "@element-plus/icons-vue";
+import { Link, Warning, CircleClose, More } from "@element-plus/icons-vue";
 import questionIcon from "../assets/question.svg";
-import {ElMessage, ElMessageBox} from "element-plus";
-import { eventBus } from './../eventBus'; // 导入事件总线
+import { ElMessage, ElMessageBox } from "element-plus";
+import { eventBus } from "./../eventBus"; // 导入事件总线
+import coherentLogo from "../assets/coherent-logo-blue.png";
 
-const openRenameDialog = (item,onConfirm) => {
-  ElMessageBox.prompt('请输入新的会话名称', '重命名会话', {
-    confirmButtonText: '确认',
-    cancelButtonText: '取消',
+const openRenameDialog = (item, onConfirm) => {
+  ElMessageBox.prompt("请输入新的会话名称", "重命名会话", {
+    confirmButtonText: "确认",
+    cancelButtonText: "取消",
     inputValue: item.title, // 设置初始值为当前值
     inputPattern: /^.{1,50}$/,
-    inputErrorMessage: '会话名称长度应在1-50个字符之间'
-  }).then(({ value }) => {
-    // 直接修改原对象的 title 属性
-    item.title = value.trim()
-
-    // 调用回调函数，传递修改后的对象
-    if (typeof onConfirm === 'function') {
-      onConfirm(item)
-    }
-    ElMessage.success('重命名成功！')
-  }).catch(() => {
-    // 用户取消的处理
-    ElMessage.info('取消重命名')
+    inputErrorMessage: "会话名称长度应在1-50个字符之间",
   })
-}
+      .then(({ value }) => {
+        // 直接修改原对象的 title 属性
+        item.title = value.trim();
 
+        // 调用回调函数，传递修改后的对象
+        if (typeof onConfirm === "function") {
+          onConfirm(item);
+        }
+        ElMessage.success("重命名成功！");
+      })
+      .catch(() => {
+        // 用户取消的处理
+        ElMessage.info("取消重命名");
+      });
+};
 
 const userInput = ref("");
 const open = ref(true);
@@ -538,6 +645,39 @@ const chatView = ref(null);
 // 存储onNewSession函数的ref
 const onNewSessionRef = ref(null);
 
+// 预览弹窗相关状态
+const previewDialogVisible = ref(false);
+const previewData = ref(null);
+const textContent = ref("");
+
+// 文件类型判断
+const isImageFile = computed(() => {
+  if (!previewData.value?.sourceUrl) return false;
+  const url = previewData.value.sourceUrl.toLowerCase();
+  const imageExtensions = [
+    ".jpg",
+    ".jpeg",
+    ".png",
+    ".gif",
+    ".bmp",
+    ".webp",
+    ".svg",
+  ];
+  return imageExtensions.some((ext) => url.includes(ext));
+});
+
+const isPdfFile = computed(() => {
+  if (!previewData.value?.sourceUrl) return false;
+  const url = previewData.value.sourceUrl.toLowerCase();
+  return url.includes(".pdf") || url.includes("pdf");
+});
+
+const isTextFile = computed(() => {
+  if (!previewData.value?.sourceUrl) return false;
+  const url = previewData.value.sourceUrl.toLowerCase();
+  const textExtensions = [".txt", ".md", ".json", ".xml", ".csv", ".log"];
+  return textExtensions.some((ext) => url.includes(ext));
+});
 
 const renameDialogVisible = ref(false);
 const renameForm = reactive({
@@ -569,19 +709,6 @@ const viewBackgroundStyle = ref({
   background: backgroundOptions.screenshotGradient,
 });
 
-const handleSiderToggle = () => {
-  const element = document.querySelector(".i-h-full.i-absolute.i-left-0");
-
-  if (element) {
-    // 如果元素的display为none，设置为block，反之设置为none
-    if (element.style.display === "none") {
-      element.style.display = "block";
-    } else {
-      element.style.display = "none";
-      renameDialogVisible.value = false;
-    }
-  }
-};
 
 
 const handleSend = (sendFunction) => {
@@ -591,7 +718,69 @@ const handleSend = (sendFunction) => {
   }
 };
 
-// 复制链接
+// 预览文件
+const handlePreview = async (source) => {
+  try {
+    if (!source?.sourceUrl) {
+      ElMessage.info("暂无可预览的文件");
+      return;
+    }
+
+    previewData.value = source;
+    previewDialogVisible.value = true;
+
+    // 如果是文本文件，尝试获取内容
+    if (isTextFile.value) {
+      try {
+        const response = await fetch(source.sourceUrl);
+        if (response.ok) {
+          textContent.value = await response.text();
+        } else {
+          textContent.value = "无法加载文件内容";
+        }
+      } catch (error) {
+        console.error("加载文本内容失败:", error);
+        textContent.value = "加载失败";
+      }
+    }
+  } catch (error) {
+    console.error("预览失败:", error);
+    ElMessage.error("预览失败，请稍后重试");
+  }
+};
+
+// 关闭预览弹窗
+const handleClosePreview = () => {
+  previewDialogVisible.value = false;
+  previewData.value = null;
+  textContent.value = "";
+};
+
+// 下载文件
+const handleDownload = async (source) => {
+  try {
+    // 如果source有sourceUrl，直接下载
+    if (source?.sourceUrl) {
+      const link = document.createElement("a");
+      link.href = source.sourceUrl;
+      link.download = source.sourceName || "download";
+      link.target = "_blank";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      ElMessage.success("文件下载已开始");
+    } else {
+      // 如果没有URL，可以生成一个示例文件或显示提示
+      ElMessage.info("暂无可下载的文件");
+    }
+  } catch (error) {
+    console.error("下载失败:", error);
+    ElMessage.error("下载失败，请稍后重试");
+  }
+};
+
+// 复制链接（保留原功能）
 const handleCopyLink = async (source) => {
   if (source.url) {
     try {
@@ -708,7 +897,7 @@ const handleCopyLink = async (source) => {
 
 .session-title {
   position: absolute;
-  width: 64px;
+  width: 200px;
   height: 24px;
   left: 16px;
   top: 16px;
@@ -719,6 +908,7 @@ const handleCopyLink = async (source) => {
   font-size: 16px;
   line-height: 24px;
   color: #0032ff;
+  text-align: left;
   margin: 0;
 }
 
@@ -736,20 +926,6 @@ const handleCopyLink = async (source) => {
   color: #333;
   background-color: #f5f7fa;
   border-radius: 4px;
-}
-
-/* 自定义会话列表头部 */
-.custom-session-header {
-  background-color: rebeccapurple;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px;
-  background: white;
-  /* border-bottom: 1px solid #e9ecef; */
-  height: 56px;
-  box-sizing: border-box;
 }
 
 .session-title {
@@ -826,7 +1002,7 @@ const handleCopyLink = async (source) => {
 }
 
 .session-item:hover {
-  /* background-color: rgba(0, 50, 255, 0.05); */
+  background-color: rgba(0, 50, 255, 0.05);
 }
 
 .session-content {
@@ -1139,6 +1315,7 @@ const handleCopyLink = async (source) => {
   max-width: 70%;
   word-wrap: break-word;
   background: #0032ff1a;
+  text-align: left;
 }
 
 .message-header-left-avatar {
@@ -1230,6 +1407,7 @@ const handleCopyLink = async (source) => {
   transition: background-color 0.2s ease;
 }
 
+
 .new-chat-button:hover {
   background-color: rgba(0, 50, 255, 0.1);
 }
@@ -1293,5 +1471,100 @@ const handleCopyLink = async (source) => {
 
 :deep .message-card {
   background-color: #fff;
+  text-align: left;
+}
+
+/* 预览弹窗样式 */
+.preview-dialog {
+  .el-dialog__body {
+    padding: 20px;
+    max-height: 70vh;
+    overflow-y: auto;
+  }
+}
+
+.preview-content {
+  min-height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 图片预览 */
+.image-preview {
+  width: 100%;
+  text-align: center;
+}
+
+.preview-image {
+  max-width: 100%;
+  max-height: 60vh;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* PDF预览 */
+.pdf-preview {
+  width: 100%;
+  height: 60vh;
+}
+
+.preview-iframe {
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+}
+
+/* 文本预览 */
+.text-preview {
+  width: 100%;
+  max-height: 60vh;
+  overflow-y: auto;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+}
+
+.text-content {
+  font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* 默认预览 */
+.default-preview {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.preview-icon {
+  margin-bottom: 20px;
+  opacity: 0.6;
+}
+
+.preview-info h3 {
+  margin: 0 0 10px 0;
+  font-size: 18px;
+  color: #333;
+  font-weight: 500;
+}
+
+.preview-info p {
+  margin: 0 0 20px 0;
+  color: #666;
+  font-size: 14px;
+}
+
+/* 弹窗底部按钮 */
+.dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
 }
 </style>
