@@ -45,7 +45,7 @@
       >
         <div class="session-list-body">
           <!-- 今天会话 -->
-          <div class="time-section" v-if="recentData && recentData.length > 0">
+          <div class="time-section" v-if="recentData  && recentData.length > 0">
             <div class="time-label">今天</div>
             <div class="session-items">
               <div
@@ -136,10 +136,10 @@
           </div>
 
           <!-- 更早会话 -->
-          <div class="time-section" v-if="oldData && oldData.length > 0">
+          <div class="time-section" v-if="oldData  && oldData.length > 0">
             <div class="time-label">更早</div>
             <div class="session-items">
-              <div v-for="item in oldData" :key="item.id" class="session-item">
+              <div v-for="item in oldData " :key="item.id" class="session-item">
                 <div class="session-content">
                   {{ item.title || "未命名会话" }}
                 </div>
@@ -387,22 +387,16 @@
         </div>
       </template>
 
-      <!-- 自定义新建聊天按钮，使用ChatInput_newChat插槽获取onNewSession函数 -->
-      <template #ChatInput_newChat="{ onNewSession }">
-        <div style="display: none">
-          {{ (eventBus.onNewSession = onNewSession) }}
-        </div>
+      <!-- 自定义新建聊天按钮，使用ChatInput_newChat插槽 -->
+      <template #ChatInput_newChat="{ onNewSession }"> 
+        <div v-if="onNewSession" ref="el => {
+          // 直接存储函数引用
+          onNewSessionRef.value = onNewSession;
+          console.log('成功获取onNewSession函数，类型:', typeof onNewSession);
+        }" style="display: none"></div>
 
-        <!--        &lt;!&ndash; 存储onNewSession函数到ref中 &ndash;&gt;-->
-        <!--        <div ref="el => onNewSessionRef.value = onNewSession" style="display: none"></div>-->
-        <!--        <button class="new-chat-button" @click="onNewSession">-->
-        <!--          <svg-->
-        <!--              width="24"-->
-        <!--              height="24"-->
-        <!--              viewBox="0 0 24 24"-->
-        <!--              fill="none"-->
-        <!--              xmlns="http://www.w3.org/2000/svg"-->
-        <!--          >-->
+        <div style="display: none;">{{ eventBus.onNewSession = onNewSession }}</div>
+
         <!--            <path-->
         <!--                d="M12.0131 7.49552C11.8548 7.49542 11.7013 7.54995 11.5785 7.6499C11.4558 7.74986 11.3713 7.88911 11.3393 8.04414L11.3256 8.18164V11.3125H8.17957L8.04207 11.3263C7.88665 11.3578 7.74693 11.4421 7.64656 11.5649C7.5462 11.6877 7.49138 11.8414 7.49138 12C7.49138 12.1586 7.5462 12.3123 7.64656 12.4351C7.74693 12.5579 7.88665 12.6422 8.04207 12.6738L8.17957 12.6875H11.3256V15.8321C11.3256 16.0145 11.398 16.1893 11.5269 16.3183C11.6559 16.4472 11.8307 16.5196 12.0131 16.5196C12.1954 16.5196 12.3703 16.4472 12.4992 16.3183C12.6281 16.1893 12.7006 16.0145 12.7006 15.8321V12.6875H15.8273C16.0097 12.6875 16.1845 12.6151 16.3135 12.4862C16.4424 12.3572 16.5148 12.1824 16.5148 12C16.5148 11.8177 16.4424 11.6428 16.3135 11.5139C16.1845 11.3849 16.0097 11.3125 15.8273 11.3125H12.7006V8.18302L12.6868 8.04414C12.6551 7.88885 12.5707 7.74929 12.448 7.64906C12.3252 7.54884 12.1716 7.49411 12.0131 7.49414V7.49552Z"-->
         <!--                fill="black"-->
@@ -604,7 +598,7 @@
 </template>
 
 <script setup>
-import { reactive, ref, computed } from "vue";
+import { reactive, ref, computed ,watch, onMounted} from "vue";
 import { View } from "@custouch-open/zenative-chat-sdk-web";
 import "@custouch-open/zenative-chat-sdk-web/style";
 import robot from "../assets/robot.png";
@@ -642,8 +636,21 @@ const openRenameDialog = (item, onConfirm) => {
 const userInput = ref("");
 const open = ref(true);
 const chatView = ref(null);
-// 存储onNewSession函数的ref
+
+// 会话状态管理
+const hasActiveSession = ref(false);
+const currentSessionId = ref(null);
+// 跟踪用户是否已经发送过消息
+const hasSentFirstMessage = ref(false);
+// 存储从插槽获取的onNewSession函数
 const onNewSessionRef = ref(null);
+
+// 监听onNewSessionRef变化，方便调试
+watch(() => onNewSessionRef.value, (newValue, oldValue) => {
+  if (newValue !== oldValue) {
+    console.log('onNewSession函数已更新:', typeof newValue === 'function' ? '已获取' : '未获取');
+  }
+});
 
 // 预览弹窗相关状态
 const previewDialogVisible = ref(false);
@@ -678,13 +685,7 @@ const isTextFile = computed(() => {
   const textExtensions = [".txt", ".md", ".json", ".xml", ".csv", ".log"];
   return textExtensions.some((ext) => url.includes(ext));
 });
-
-const renameDialogVisible = ref(false);
-const renameForm = reactive({
-  id: "",
-  title: "",
-});
-let currentItem = null;
+ 
 //
 // // 打开重命名弹窗
 // const openRenameDialog = (item) => {
@@ -713,8 +714,109 @@ const viewBackgroundStyle = ref({
 
 const handleSend = (sendFunction) => {
   if (userInput.value.trim()) {
+    // 直接发送消息，让SDK内部处理会话逻辑
     sendFunction(userInput.value);
     userInput.value = "";
+    
+    // 标记用户已经发送过消息
+    hasSentFirstMessage.value = true;
+  }
+};
+  
+  // 当新建会话时更新状态
+const createNewSession = async () => {
+  console.log('开始创建新会话...');
+  
+  // 检查onNewSessionRef和chatView的状态，用于调试
+  console.log('onNewSessionRef状态:', {
+    exists: !!onNewSessionRef.value,
+    type: typeof onNewSessionRef.value
+  });
+  
+  console.log('chatView状态:', {
+    exists: !!chatView.value,
+    methods: chatView.value ? Object.keys(chatView.value).filter(key => typeof chatView.value[key] === 'function') : []
+  });
+  
+  // 策略1: 优先使用从插槽直接获取的onNewSession函数
+  if (typeof onNewSessionRef.value === 'function') {
+    try {
+      console.log('尝试直接调用onNewSession函数');
+      const result = onNewSessionRef.value();
+      
+      // 检查是否是Promise，如果是则等待其完成
+      if (result && typeof result.then === 'function') {
+        await result;
+      }
+      
+      // 会话创建后更新状态
+      hasActiveSession.value = true;
+      console.log('新会话创建成功，已更新会话状态');
+      return true;
+    } catch (error) {
+      console.error('调用onNewSession函数失败:', error);
+    }
+  }
+  
+  // 策略2: 尝试通过chatView直接操作（更直接的方式）
+  if (chatView.value) {
+    try {
+      console.log('尝试通过chatView直接触发新会话创建');
+      // 检查chatView中可能用于创建新会话的方法
+      const possibleMethods = ['newChat', 'createChat', 'handleNewSession', 'createNewSession'];
+      
+      for (const methodName of possibleMethods) {
+        if (typeof chatView.value[methodName] === 'function') {
+          console.log(`发现并尝试调用chatView.${methodName}`);
+          const result = chatView.value[methodName]();
+          
+          if (result && typeof result.then === 'function') {
+            await result;
+          }
+          
+          hasActiveSession.value = true;
+          console.log(`通过chatView.${methodName}创建新会话成功`);
+          return true;
+        }
+      }
+      
+      console.log('chatView中未找到已知的创建新会话方法');
+    } catch (chatViewError) {
+      console.error('通过chatView创建会话失败:', chatViewError);
+    }
+  }
+  
+  // 策略3: 作为最后的后备方案，尝试重新触发组件更新
+  try {
+    console.log('尝试强制刷新组件以触发新会话创建');
+    // 触发一次视图更新
+    userInput.value = ''; // 清空输入框可能会触发某些组件更新
+    
+    // 添加一个小延迟后再次尝试onNewSession
+    return new Promise(resolve => {
+      setTimeout(() => {
+        if (typeof onNewSessionRef.value === 'function') {
+          try {
+            console.log('延迟重试创建新会话...');
+            onNewSessionRef.value();
+            hasActiveSession.value = true;
+            resolve(true);
+          } catch (retryError) {
+            console.error('延迟重试也失败:', retryError);
+            hasActiveSession.value = false;
+            resolve(false);
+          }
+        } else {
+          console.warn('延迟重试时仍然无法获取onNewSession函数');
+          hasActiveSession.value = false;
+          resolve(false);
+        }
+      }, 300); // 稍微增加延迟时间
+    });
+  } catch (finalError) {
+    console.error('所有创建新会话的尝试都失败了:', finalError);
+    hasActiveSession.value = false;
+    return false;
   }
 };
 
@@ -799,6 +901,7 @@ const handleCopyLink = async (source) => {
     }
   }
 };
+ 
 </script>
 
 <style scoped>
