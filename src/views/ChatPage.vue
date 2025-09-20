@@ -34,205 +34,6 @@
         </div>
       </template>
 
-      <!-- 自定义会话列表内容 -->
-      <template
-          #SessionList_body="{
-          recentData,
-          oldData,
-          onEditConfirm,
-          onDeleteSession,
-        }"
-      >
-        <div class="session-list-body">
-          <!-- 今天会话 -->
-          <div class="time-section" v-if="recentData  && recentData.length > 0">
-            <div class="time-label">今天</div>
-            <div class="session-items">
-              <div
-                  v-for="item in recentData"
-                  :key="item.id"
-                  class="session-item"
-              >
-                <div class="session-content">
-                  {{ item.title || "未命名会话" }}
-                </div>
-                <div class="session-actions">
-                  <el-dropdown trigger="click">
-                    <el-button size="small" text class="action-btn">
-                      <svg
-                          width="16"
-                          height="16"
-                          viewBox="0 0 16 16"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                            fill-rule="evenodd"
-                            clip-rule="evenodd"
-                            d="M8 5C8.55228 5 9 4.55228 9 4C9 3.44772 8.55228 3 8 3C7.44772 3 7 3.44772 7 4C7 4.55228 7.44772 5 8 5ZM8 9C8.55228 9 9 8.55229 9 8C9 7.44772 8.55228 7 8 7C7.44772 7 7 7.44772 7 8C7 8.55229 7.44772 9 8 9ZM9 11.6667C9 12.219 8.55228 12.6667 8 12.6667C7.44772 12.6667 7 12.219 7 11.6667C7 11.1144 7.44772 10.6667 8 10.6667C8.55228 10.6667 9 11.1144 9 11.6667Z"
-                            fill="#C8C8C8"
-                        />
-                      </svg>
-                    </el-button>
-                    <template #dropdown>
-                      <el-dropdown-menu>
-                        <el-dropdown-item
-                            @click="openRenameDialog(item, onEditConfirm)"
-                            divided
-                        >
-                          <div class="dropdown-item">
-                            <span>重命名</span>
-                            <svg
-                                width="16"
-                                height="16"
-                                viewBox="0 0 16 16"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                  fill-rule="evenodd"
-                                  clip-rule="evenodd"
-                                  d="M11.0365 1.52867C10.9114 1.40356 10.7417 1.33328 10.5648 1.33331C10.3879 1.33335 10.2183 1.40369 10.0933 1.52886L3.19494 8.43553C3.07009 8.56053 2.99996 8.72997 2.99996 8.90665V11.3333C2.99996 11.7015 3.29844 12 3.66663 12H6.10563C6.28249 12 6.4521 11.9297 6.57713 11.8046L13.4715 4.90728C13.7317 4.64695 13.7317 4.225 13.4715 3.96467L11.0365 1.52867ZM4.33329 9.18255L10.5651 2.94317L12.0573 4.43599L5.8294 10.6666H4.33329V9.18255ZM2.33329 13.3333C1.9651 13.3333 1.66663 13.6318 1.66663 14C1.66663 14.3682 1.9651 14.6666 2.33329 14.6666H14.3333C14.7015 14.6666 15 14.3682 15 14C15 13.6318 14.7015 13.3333 14.3333 13.3333H2.33329Z"
-                                  fill="#646464"
-                              />
-                            </svg>
-                          </div>
-                        </el-dropdown-item>
-                        <el-dropdown-item
-                            @click="onDeleteSession(item.id)"
-                            divided
-                        >
-                          <div class="dropdown-item">
-                            <span>删除</span>
-                            <svg
-                                width="16"
-                                height="16"
-                                viewBox="0 0 16 16"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <g clip-path="url(#clip0_31_926)">
-                                <path
-                                    fill-rule="evenodd"
-                                    clip-rule="evenodd"
-                                    d="M6.42963 0.666687C6.18616 0.666687 5.96206 0.799406 5.84503 1.0129L4.93848 2.66669H2.99996H1.33329C0.965103 2.66669 0.666626 2.96516 0.666626 3.33335C0.666626 3.70154 0.965103 4.00002 1.33329 4.00002H2.33329V14.6667C2.33329 15.0349 2.63177 15.3334 2.99996 15.3334H13C13.3681 15.3334 13.6666 15.0349 13.6666 14.6667V4.00002H14.6666C15.0348 4.00002 15.3333 3.70154 15.3333 3.33335C15.3333 2.96516 15.0348 2.66669 14.6666 2.66669H13H11.0653L10.1796 1.01788C10.0634 0.801609 9.83779 0.666687 9.59229 0.666687H6.42963ZM9.55175 2.66669L9.19364 2.00002H6.82444L6.459 2.66669H9.55175ZM5.33329 4.00002H3.66663V14H12.3333V4.00002H10.6666H5.33329ZM6.66663 6.00002C7.03482 6.00002 7.33329 6.2985 7.33329 6.66669V11C7.33329 11.3682 7.03482 11.6667 6.66663 11.6667C6.29844 11.6667 5.99996 11.3682 5.99996 11V6.66669C5.99996 6.2985 6.29844 6.00002 6.66663 6.00002ZM9.33329 6.00002C9.70148 6.00002 9.99996 6.2985 9.99996 6.66669V11C9.99996 11.3682 9.70148 11.6667 9.33329 11.6667C8.9651 11.6667 8.66663 11.3682 8.66663 11V6.66669C8.66663 6.2985 8.9651 6.00002 9.33329 6.00002Z"
-                                    fill="#646464"
-                                />
-                              </g>
-                              <defs>
-                                <clipPath id="clip0_31_926">
-                                  <rect width="16" height="16" fill="white" />
-                                </clipPath>
-                              </defs>
-                            </svg>
-                          </div>
-                        </el-dropdown-item>
-                      </el-dropdown-menu>
-                    </template>
-                  </el-dropdown>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- 更早会话 -->
-          <div class="time-section" v-if="oldData  && oldData.length > 0">
-            <div class="time-label">更早</div>
-            <div class="session-items">
-              <div v-for="item in oldData " :key="item.id" class="session-item">
-                <div class="session-content">
-                  {{ item.title || "未命名会话" }}
-                </div>
-                <div class="session-actions">
-                  <el-dropdown trigger="click">
-                    <el-button size="small" text class="action-btn">
-                      <svg
-                          width="16"
-                          height="16"
-                          viewBox="0 0 16 16"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                            fill-rule="evenodd"
-                            clip-rule="evenodd"
-                            d="M8 5C8.55228 5 9 4.55228 9 4C9 3.44772 8.55228 3 8 3C7.44772 3 7 3.44772 7 4C7 4.55228 7.44772 5 8 5ZM8 9C8.55228 9 9 8.55229 9 8C9 7.44772 8.55228 7 8 7C7.44772 7 7 7.44772 7 8C7 8.55229 7.44772 9 8 9ZM9 11.6667C9 12.219 8.55228 12.6667 8 12.6667C7.44772 12.6667 7 12.219 7 11.6667C7 11.1144 7.44772 10.6667 8 10.6667C8.55228 10.6667 9 11.1144 9 11.6667Z"
-                            fill="#C8C8C8"
-                        />
-                      </svg>
-                    </el-button>
-                    <template #dropdown>
-                      <el-dropdown-menu>
-                        <el-dropdown-item
-                            @click="openRenameDialog(item, onEditConfirm)"
-                        >
-                          <div class="dropdown-item">
-                            <span>重命名</span>
-                            <svg
-                                width="16"
-                                height="16"
-                                viewBox="0 0 16 16"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                  fill-rule="evenodd"
-                                  clip-rule="evenodd"
-                                  d="M11.0365 1.52867C10.9114 1.40356 10.7417 1.33328 10.5648 1.33331C10.3879 1.33335 10.2183 1.40369 10.0933 1.52886L3.19494 8.43553C3.07009 8.56053 2.99996 8.72997 2.99996 8.90665V11.3333C2.99996 11.7015 3.29844 12 3.66663 12H6.10563C6.28249 12 6.4521 11.9297 6.57713 11.8046L13.4715 4.90728C13.7317 4.64695 13.7317 4.225 13.4715 3.96467L11.0365 1.52867ZM4.33329 9.18255L10.5651 2.94317L12.0573 4.43599L5.8294 10.6666H4.33329V9.18255ZM2.33329 13.3333C1.9651 13.3333 1.66663 13.6318 1.66663 14C1.66663 14.3682 1.9651 14.6666 2.33329 14.6666H14.3333C14.7015 14.6666 15 14.3682 15 14C15 13.6318 14.7015 13.3333 14.3333 13.3333H2.33329Z"
-                                  fill="#646464"
-                              />
-                            </svg>
-                          </div>
-                        </el-dropdown-item>
-                        <el-dropdown-item
-                            @click="onDeleteSession(item.id)"
-                            divided
-                        >
-                          <div class="dropdown-item">
-                            <span>删除</span>
-                            <svg
-                                width="16"
-                                height="16"
-                                viewBox="0 0 16 16"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <g clip-path="url(#clip0_31_926)">
-                                <path
-                                    fill-rule="evenodd"
-                                    clip-rule="evenodd"
-                                    d="M6.42963 0.666687C6.18616 0.666687 5.96206 0.799406 5.84503 1.0129L4.93848 2.66669H2.99996H1.33329C0.965103 2.66669 0.666626 2.96516 0.666626 3.33335C0.666626 3.70154 0.965103 4.00002 1.33329 4.00002H2.33329V14.6667C2.33329 15.0349 2.63177 15.3334 2.99996 15.3334H13C13.3681 15.3334 13.6666 15.0349 13.6666 14.6667V4.00002H14.6666C15.0348 4.00002 15.3333 3.70154 15.3333 3.33335C15.3333 2.96516 15.0348 2.66669 14.6666 2.66669H13H11.0653L10.1796 1.01788C10.0634 0.801609 9.83779 0.666687 9.59229 0.666687H6.42963ZM9.55175 2.66669L9.19364 2.00002H6.82444L6.459 2.66669H9.55175ZM5.33329 4.00002H3.66663V14H12.3333V4.00002H10.6666H5.33329ZM6.66663 6.00002C7.03482 6.00002 7.33329 6.2985 7.33329 6.66669V11C7.33329 11.3682 7.03482 11.6667 6.66663 11.6667C6.29844 11.6667 5.99996 11.3682 5.99996 11V6.66669C5.99996 6.2985 6.29844 6.00002 6.66663 6.00002ZM9.33329 6.00002C9.70148 6.00002 9.99996 6.2985 9.99996 6.66669V11C9.99996 11.3682 9.70148 11.6667 9.33329 11.6667C8.9651 11.6667 8.66663 11.3682 8.66663 11V6.66669C8.66663 6.2985 8.9651 6.00002 9.33329 6.00002Z"
-                                    fill="#646464"
-                                />
-                              </g>
-                              <defs>
-                                <clipPath id="clip0_31_926">
-                                  <rect width="16" height="16" fill="white" />
-                                </clipPath>
-                              </defs>
-                            </svg>
-                          </div>
-                        </el-dropdown-item>
-                      </el-dropdown-menu>
-                    </template>
-                  </el-dropdown>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- 空状态 -->
-          <div
-              class="empty-state"
-              v-if="!recentData?.length && !oldData?.length"
-          >
-            <div class="empty-content">
-              <div class="empty-icon">💬</div>
-              <div class="empty-text">暂无会话记录</div>
-            </div>
-          </div>
-        </div>
-      </template>
 
       <!-- 自定义聊天开始页面 -->
       <template #ChatBegin_default="{ send, config }">
@@ -388,7 +189,7 @@
       </template>
 
       <!-- 自定义新建聊天按钮，使用ChatInput_newChat插槽 -->
-      <template #ChatInput_newChat="{ onNewSession }"> 
+      <template #ChatInput_newChat="{ onNewSession }">
         <div v-if="onNewSession" ref="el => {
           // 直接存储函数引用
           onNewSessionRef.value = onNewSession;
@@ -685,7 +486,7 @@ const isTextFile = computed(() => {
   const textExtensions = [".txt", ".md", ".json", ".xml", ".csv", ".log"];
   return textExtensions.some((ext) => url.includes(ext));
 });
- 
+
 //
 // // 打开重命名弹窗
 // const openRenameDialog = (item) => {
@@ -717,38 +518,38 @@ const handleSend = (sendFunction) => {
     // 直接发送消息，让SDK内部处理会话逻辑
     sendFunction(userInput.value);
     userInput.value = "";
-    
+
     // 标记用户已经发送过消息
     hasSentFirstMessage.value = true;
   }
 };
-  
-  // 当新建会话时更新状态
+
+// 当新建会话时更新状态
 const createNewSession = async () => {
   console.log('开始创建新会话...');
-  
+
   // 检查onNewSessionRef和chatView的状态，用于调试
   console.log('onNewSessionRef状态:', {
     exists: !!onNewSessionRef.value,
     type: typeof onNewSessionRef.value
   });
-  
+
   console.log('chatView状态:', {
     exists: !!chatView.value,
     methods: chatView.value ? Object.keys(chatView.value).filter(key => typeof chatView.value[key] === 'function') : []
   });
-  
+
   // 策略1: 优先使用从插槽直接获取的onNewSession函数
   if (typeof onNewSessionRef.value === 'function') {
     try {
       console.log('尝试直接调用onNewSession函数');
       const result = onNewSessionRef.value();
-      
+
       // 检查是否是Promise，如果是则等待其完成
       if (result && typeof result.then === 'function') {
         await result;
       }
-      
+
       // 会话创建后更新状态
       hasActiveSession.value = true;
       console.log('新会话创建成功，已更新会话状态');
@@ -757,41 +558,41 @@ const createNewSession = async () => {
       console.error('调用onNewSession函数失败:', error);
     }
   }
-  
+
   // 策略2: 尝试通过chatView直接操作（更直接的方式）
   if (chatView.value) {
     try {
       console.log('尝试通过chatView直接触发新会话创建');
       // 检查chatView中可能用于创建新会话的方法
       const possibleMethods = ['newChat', 'createChat', 'handleNewSession', 'createNewSession'];
-      
+
       for (const methodName of possibleMethods) {
         if (typeof chatView.value[methodName] === 'function') {
           console.log(`发现并尝试调用chatView.${methodName}`);
           const result = chatView.value[methodName]();
-          
+
           if (result && typeof result.then === 'function') {
             await result;
           }
-          
+
           hasActiveSession.value = true;
           console.log(`通过chatView.${methodName}创建新会话成功`);
           return true;
         }
       }
-      
+
       console.log('chatView中未找到已知的创建新会话方法');
     } catch (chatViewError) {
       console.error('通过chatView创建会话失败:', chatViewError);
     }
   }
-  
+
   // 策略3: 作为最后的后备方案，尝试重新触发组件更新
   try {
     console.log('尝试强制刷新组件以触发新会话创建');
     // 触发一次视图更新
     userInput.value = ''; // 清空输入框可能会触发某些组件更新
-    
+
     // 添加一个小延迟后再次尝试onNewSession
     return new Promise(resolve => {
       setTimeout(() => {
@@ -901,7 +702,7 @@ const handleCopyLink = async (source) => {
     }
   }
 };
- 
+
 </script>
 
 <style scoped>
@@ -1510,26 +1311,9 @@ const handleCopyLink = async (source) => {
   transition: background-color 0.2s ease;
 }
 
+
 .new-chat-button:hover {
   background-color: rgba(0, 50, 255, 0.1);
-}
-
-/* 固定 welcome-header，使其不参与页面滚动 */
-.welcome-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(8px);
-  padding: 16px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-}
-
-/* 为 welcome-screen 添加上边距，防止内容被固定的头部遮挡 */
-.welcome-screen {
-  padding-top: 80px; /* 确保内容不被固定的头部遮挡 */
 }
 
 /* 背景效果 */
@@ -1589,10 +1373,55 @@ const handleCopyLink = async (source) => {
   display: none;
 }
 
+
+
 :deep .message-card {
   background-color: #fff;
   text-align: left;
 }
+
+
+
+
+
+:deep .i-font-semibold {
+
+  text-align: left;
+
+  width: 234px;
+  height: 16px;
+
+  font-family: 'PingFang SC';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+  /* identical to box height, or 133% */
+
+  color: rgba(100, 100, 100, 0.8);
+
+  /* Inside auto layout */
+  flex: none;
+  order: 0;
+  align-self: stretch;
+  flex-grow: 0;
+
+}
+:deep .i-relative {
+  flex: 1;
+  font-family: "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI",
+  Roboto, sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 16px;
+  color: #000000;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
+  white-space: nowrap;
+}
+
 
 /* 预览弹窗样式 */
 .preview-dialog {
@@ -1602,6 +1431,13 @@ const handleCopyLink = async (source) => {
     overflow-y: auto;
   }
 }
+
+
+
+
+
+
+
 
 .preview-content {
   min-height: 400px;
