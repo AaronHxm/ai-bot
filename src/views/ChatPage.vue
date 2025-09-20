@@ -1510,9 +1510,26 @@ const handleCopyLink = async (source) => {
   transition: background-color 0.2s ease;
 }
 
-
 .new-chat-button:hover {
   background-color: rgba(0, 50, 255, 0.1);
+}
+
+/* 固定 welcome-header，使其不参与页面滚动 */
+.welcome-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  padding: 16px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* 为 welcome-screen 添加上边距，防止内容被固定的头部遮挡 */
+.welcome-screen {
+  padding-top: 80px; /* 确保内容不被固定的头部遮挡 */
 }
 
 /* 背景效果 */
